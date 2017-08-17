@@ -1,0 +1,26 @@
+project:
+  name: @project.name@
+  version: @project.version@
+
+# Spring Boot configuration
+spring:
+  # Profiling
+  profiles:
+    active: development
+
+# Logging settings
+logging:
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    ROOT: INFO
+    ru.philit.ufs: DEBUG
+    org.springframework.web: ERROR
+    org.hibernate: ERROR
+    com.hazelcast: INFO
+
+# Server configuration
+server:
+  port: 8085
+  contextPath: /client
+  session.timeout: 30
