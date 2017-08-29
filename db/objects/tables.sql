@@ -4,7 +4,7 @@ CREATE TABLE bclient.dim_user (
     user_id int4 NOT NULL DEFAULT nextval('bclient.seq_user_id'::regclass),
     user_login varchar(100) NOT NULL,
     user_full_name varchar(300) NOT NULL,
-	user_password varchar2(100) NOT NULL,
+	user_password varchar(100) NOT NULL,
     CONSTRAINT pk_user PRIMARY KEY (user_id),
 	CONSTRAINT uk_user_login UNIQUE (user_login)
 )
@@ -22,8 +22,8 @@ CREATE TABLE bclient.dim_legal_entity (
     legal_entity_full_name varchar(300) NOT NULL,
 	legal_entity_inn varchar(20) NOT NULL,
 	legal_entity_kpp varchar(20) NOT NULL,
-	legal_entity_ogrn varchar(20) NOT NULL,
-	legal_address varchar(500)
+	legal_entity_ogrn varchar(20),
+	legal_address varchar(500),
     CONSTRAINT pk_legal_entity PRIMARY KEY (legal_entity_id)
 )
 WITH (
@@ -40,7 +40,7 @@ CREATE TABLE bclient.dim_bank (
 	bank_inn varchar(50) NOT NULL,
 	bank_kpp varchar(50) NOT NULL,
 	bank_bic varchar(50) NOT NULL,
-	bank_corr_acc varchar(50) NOT NULL,
+	bank_corr_acc varchar(50),
     CONSTRAINT pk_bank PRIMARY KEY (bank_id)
 )
 WITH (
@@ -151,7 +151,7 @@ CREATE TABLE bclient.fct_payment_order (
 	recipient_account_id int4 NOT NULL,
 	contract_id int4,
     currency_code varchar(10) NOT NULL,
-	payment_order_amt numeric(2) NOT NULL,
+	payment_order_amt numeric(10,2) NOT NULL,
 	payment_reason varchar(500),
 	payment_priority_code varchar(2),
 	payment_order_status_id int4 NOT NULL,
@@ -181,7 +181,7 @@ CREATE SEQUENCE bclient.seq_operation_id;
 CREATE TABLE bclient.fct_operation (
     operation_id int4 NOT NULL DEFAULT nextval('bclient.seq_operation_id'::regclass),
 	operation_date date NOT NULL,
-	operation_amt numeric(2) NOT NULL,
+	operation_amt numeric(10,2) NOT NULL,
 	debet_account_id int4 NOT NULL,
 	kredit_account_id int4 NOT NULL,
 	operation_descr varchar(300),
@@ -202,7 +202,7 @@ CREATE SEQUENCE bclient.seq_account_balance_id;
 CREATE TABLE bclient.fct_account_balance (
     account_balance_id int4 NOT NULL DEFAULT nextval('bclient.seq_account_balance_id'::regclass),
 	account_balance_date date NOT NULL,
-	account_balance_amt numeric(2) NOT NULL,
+	account_balance_amt numeric(10,2) NOT NULL,
 	account_id int4 NOT NULL,
 	CONSTRAINT pk_account_balance PRIMARY KEY (account_balance_id),
 	CONSTRAINT fk_account_balance_to_account FOREIGN KEY (account_id) REFERENCES bclient.dim_account (account_id)
