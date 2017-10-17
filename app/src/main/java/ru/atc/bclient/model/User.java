@@ -1,5 +1,10 @@
 package ru.atc.bclient.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +14,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "dim_user")
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
@@ -29,42 +38,9 @@ public class User extends BaseEntity {
     @Size(max = 100)
     private String password;
 
-    public User() {
-    }
-
-    public User(String login, String fullName, String password) {
-        this(null, login, fullName, password);
-    }
-
     public User(Integer id, String login, String fullName, String password) {
-        super(id);
-        this.login = login;
-        this.fullName = fullName;
-        this.password = password;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this(login, fullName, password);
+        setId(id);
     }
 
     @Override
