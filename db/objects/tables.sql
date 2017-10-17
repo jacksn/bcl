@@ -96,21 +96,21 @@ CREATE TABLE bclient.dim_contract (
 	contract_open_date date NOT NULL,
 	contract_close_date date NOT NULL,
 	issuer_legal_entity_id int4 NOT NULL,
-	singer_legal_entity_id int4 NOT NULL,
+	signer_legal_entity_id int4 NOT NULL,
     currency_code varchar(10) NOT NULL,
     CONSTRAINT pk_contract PRIMARY KEY (contract_id),
 	CONSTRAINT fk_contract_to_issuer FOREIGN KEY (issuer_legal_entity_id) REFERENCES bclient.dim_legal_entity (legal_entity_id),
-	CONSTRAINT fk_contract_to_singer FOREIGN KEY (singer_legal_entity_id) REFERENCES bclient.dim_legal_entity (legal_entity_id)
+	CONSTRAINT fk_contract_to_signer FOREIGN KEY (signer_legal_entity_id) REFERENCES bclient.dim_legal_entity (legal_entity_id)
 )
 WITH (
     OIDS=FALSE
 );
 COMMENT ON TABLE bclient.dim_contract IS 'Договора';
 COMMENT ON COLUMN bclient.dim_contract.issuer_legal_entity_id IS 'Эмитент договора';
-COMMENT ON COLUMN bclient.dim_contract.singer_legal_entity_id IS 'Подписант договора';
+COMMENT ON COLUMN bclient.dim_contract.signer_legal_entity_id IS 'Подписант договора';
 ALTER SEQUENCE bclient.seq_contract_id OWNED BY bclient.dim_contract.contract_id;
 CREATE INDEX ix_contract_issuer on bclient.dim_contract (issuer_legal_entity_id);
-CREATE INDEX ix_contract_singer on bclient.dim_contract (singer_legal_entity_id);
+CREATE INDEX ix_contract_signer on bclient.dim_contract (signer_legal_entity_id);
 
 -- dim_payment_order_status
 CREATE TABLE bclient.dim_payment_order_status (
@@ -183,11 +183,11 @@ CREATE TABLE bclient.fct_operation (
 	operation_date date NOT NULL,
 	operation_amt numeric(10,2) NOT NULL,
 	debet_account_id int4 NOT NULL,
-	kredit_account_id int4 NOT NULL,
+	credit_account_id int4 NOT NULL,
 	operation_descr varchar(300),
 	CONSTRAINT pk_operation PRIMARY KEY (operation_id),
 	CONSTRAINT fk_operation_to_debet_acc FOREIGN KEY (debet_account_id) REFERENCES bclient.dim_account (account_id),
-	CONSTRAINT fk_operation_to_kredit_acc FOREIGN KEY (kredit_account_id) REFERENCES bclient.dim_account (account_id)
+	CONSTRAINT fk_operation_to_credit_acc FOREIGN KEY (credit_account_id) REFERENCES bclient.dim_account (account_id)
 )
 WITH (
     OIDS=FALSE
@@ -195,7 +195,7 @@ WITH (
 COMMENT ON TABLE bclient.fct_operation IS 'Финансовые операции';
 ALTER SEQUENCE bclient.seq_operation_id OWNED BY bclient.fct_operation.operation_id;
 CREATE INDEX ix_operation_debet_acc on bclient.fct_operation (debet_account_id);
-CREATE INDEX ix_operation_kredit_acc on bclient.fct_operation (kredit_account_id);
+CREATE INDEX ix_operation_credit_acc on bclient.fct_operation (credit_account_id);
 
 -- fct_account_balance
 CREATE SEQUENCE bclient.seq_account_balance_id;
