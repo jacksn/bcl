@@ -50,6 +50,11 @@ public class Bank extends BaseEntity {
     @Size(max = 50)
     private String corrAccount;
 
+    public Bank(Integer id, String name, String inn, String kpp, String bic, String corrAccount) {
+        this(name, inn, kpp, bic, corrAccount);
+        setId(id);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
