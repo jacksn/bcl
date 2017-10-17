@@ -16,12 +16,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "dim_account")
 @AttributeOverride(name = "id", column = @Column(name = "account_id"))
@@ -59,5 +59,37 @@ public class Account extends BaseEntity {
     public Account(Integer id, String name, String number, LegalEntity legalEntity, Bank bank, String currencyCode, AccountStatus status) {
         this(name, number, legalEntity, bank, currencyCode, status);
         setId(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Account account = (Account) o;
+        return Objects.equals(name, account.name) &&
+                Objects.equals(number, account.number) &&
+                Objects.equals(legalEntity, account.legalEntity) &&
+                Objects.equals(bank, account.bank) &&
+                Objects.equals(currencyCode, account.currencyCode) &&
+                status == account.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, number, legalEntity, bank, currencyCode, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id='" + getId() + '\'' +
+                ", name='" + name + '\'' +
+                ", number='" + number + '\'' +
+                ", legalEntity=" + legalEntity +
+                ", bank=" + bank +
+                ", currencyCode='" + currencyCode + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

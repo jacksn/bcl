@@ -18,12 +18,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "dim_contract")
 @AttributeOverride(name = "id", column = @Column(name = "contract_id"))
@@ -66,5 +66,39 @@ public class Contract extends BaseEntity {
                     LegalEntity signer, String currencyCode) {
         this(name, number, openDate, closeDate, issuer, signer, currencyCode);
         setId(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Contract contract = (Contract) o;
+        return Objects.equals(name, contract.name) &&
+                Objects.equals(number, contract.number) &&
+                Objects.equals(openDate, contract.openDate) &&
+                Objects.equals(closeDate, contract.closeDate) &&
+                Objects.equals(issuer, contract.issuer) &&
+                Objects.equals(signer, contract.signer) &&
+                Objects.equals(currencyCode, contract.currencyCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, number, openDate, closeDate, issuer, signer, currencyCode);
+    }
+
+    @Override
+    public String toString() {
+        return "Contract{" +
+                "id='" + getId() + '\'' +
+                ", name='" + name + '\'' +
+                ", number='" + number + '\'' +
+                ", openDate=" + openDate +
+                ", closeDate=" + closeDate +
+                ", issuer=" + issuer +
+                ", signer=" + signer +
+                ", currencyCode='" + currencyCode + '\'' +
+                '}';
     }
 }

@@ -21,12 +21,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "fct_payment_order")
 @AttributeOverride(name = "id", column = @Column(name = "payment_order_id"))
@@ -101,5 +101,51 @@ public class PaymentOrder extends BaseEntity {
                         String rejectReason) {
         this(number, date,sender,senderAccount,recipient,recipientAccount,contract,currencyCode,amount,reason,priorityCode,status,rejectReason);
         setId(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        PaymentOrder that = (PaymentOrder) o;
+        return number == that.number &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(sender, that.sender) &&
+                Objects.equals(senderAccount, that.senderAccount) &&
+                Objects.equals(recipient, that.recipient) &&
+                Objects.equals(recipientAccount, that.recipientAccount) &&
+                Objects.equals(contract, that.contract) &&
+                Objects.equals(currencyCode, that.currencyCode) &&
+                Objects.equals(amount, that.amount) &&
+                Objects.equals(reason, that.reason) &&
+                Objects.equals(priorityCode, that.priorityCode) &&
+                status == that.status &&
+                Objects.equals(rejectReason, that.rejectReason);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), number, date, sender, senderAccount, recipient, recipientAccount, contract, currencyCode, amount, reason, priorityCode, status, rejectReason);
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentOrder{" +
+                "id='" + getId() + '\'' +
+                ", number=" + number +
+                ", date=" + date +
+                ", sender=" + sender +
+                ", senderAccount=" + senderAccount +
+                ", recipient=" + recipient +
+                ", recipientAccount=" + recipientAccount +
+                ", contract=" + contract +
+                ", currencyCode='" + currencyCode + '\'' +
+                ", amount=" + amount +
+                ", reason='" + reason + '\'' +
+                ", priorityCode='" + priorityCode + '\'' +
+                ", status=" + status +
+                ", rejectReason='" + rejectReason + '\'' +
+                '}';
     }
 }

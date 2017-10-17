@@ -19,7 +19,6 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "dim_bank")
 @AttributeOverride(name = "id", column = @Column(name = "bank_id"))
@@ -70,5 +69,17 @@ public class Bank extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), name, inn, kpp, bic, corrAccount);
+    }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "id='" + getId() + '\'' +
+                ", name='" + name + '\'' +
+                ", inn='" + inn + '\'' +
+                ", kpp='" + kpp + '\'' +
+                ", bic='" + bic + '\'' +
+                ", corrAccount='" + corrAccount + '\'' +
+                '}';
     }
 }
