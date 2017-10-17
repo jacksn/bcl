@@ -8,7 +8,7 @@ import javax.persistence.*;
 public abstract class BaseEntity {
     @Id
     // PROPERTY access for id due to bug: https://hibernate.atlassian.net/browse/HHH-3718
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sec_user_id")
     @Access(value = AccessType.PROPERTY)
     private Integer id;
 
@@ -45,4 +45,10 @@ public abstract class BaseEntity {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Entity %s (%s)", getClass().getName(), getId());
+    }
+
 }
