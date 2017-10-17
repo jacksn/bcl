@@ -3,6 +3,7 @@ package ru.atc.bclient.model;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,7 +11,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "dim_user")
-@AttributeOverride(name = "id", column = @Column(name ="user_id"))
+@AttributeOverride(name = "id", column = @Column(name = "user_id"))
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_user_id")
 public class User extends BaseEntity {
     @Column(name = "user_login")
     @NotNull

@@ -1,6 +1,11 @@
 package ru.atc.bclient.model;
 
-import javax.persistence.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access
@@ -8,7 +13,7 @@ import javax.persistence.*;
 public abstract class BaseEntity {
     @Id
     // PROPERTY access for id due to bug: https://hibernate.atlassian.net/browse/HHH-3718
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sec_user_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_gen")
     @Access(value = AccessType.PROPERTY)
     private Integer id;
 
