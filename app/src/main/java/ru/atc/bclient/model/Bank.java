@@ -46,7 +46,6 @@ public class Bank extends BaseEntity {
     private String bic;
 
     @Column(name = "bank_corr_acc")
-    @NotNull
     @Size(max = 50)
     private String corrAccount;
 

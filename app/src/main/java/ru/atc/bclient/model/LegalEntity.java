@@ -44,12 +44,10 @@ public class LegalEntity extends BaseEntity {
     private String kpp;
 
     @Column(name = "legal_entity_ogrn")
-    @NotNull
     @Size(max = 20)
     private String ogrn;
 
     @Column(name = "legal_address")
-    @NotNull
     @Size(max = 500)
     private String address;
 
