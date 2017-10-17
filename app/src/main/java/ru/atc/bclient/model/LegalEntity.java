@@ -19,7 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "dim_user")
+@Table(name = "dim_legal_entity")
 @AttributeOverride(name = "id", column = @Column(name = "legal_entity_id"))
 @SequenceGenerator(name = "default_gen", sequenceName = "seq_legal_entity_id")
 public class LegalEntity extends BaseEntity {
