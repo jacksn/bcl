@@ -16,4 +16,11 @@ public enum AccountStatus {
     public String toString() {
         return name;
     }
+
+    public static AccountStatus of(int id) {
+        if (id < 1 || id > (values().length - 1)) {
+            throw new IllegalArgumentException("Не найден статус счета с id=" + id);
+        }
+        return values()[id];
+    }
 }
