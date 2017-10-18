@@ -10,10 +10,13 @@ import java.util.Collections;
 import static java.util.Objects.requireNonNull;
 
 public class AuthorizedUser extends org.springframework.security.core.userdetails.User {
+    private User user;
+
     public AuthorizedUser(User user) {
         super(user.getLogin(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("USER")));
+        this.user = user;
     }
 
     public static AuthorizedUser safeGet() {
@@ -29,5 +32,9 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
         AuthorizedUser user = safeGet();
         requireNonNull(user, "No authorized user found");
         return user;
+    }
+
+    public Integer getId() {
+        return user.getId();
     }
 }
