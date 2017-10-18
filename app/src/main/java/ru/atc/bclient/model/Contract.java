@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.AttributeOverride;
@@ -49,11 +48,11 @@ public class Contract extends BaseEntity {
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     private LocalDate closeDate;
 
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn(name = "issuer_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity issuer;
 
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn(name = "signer_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity signer;
 

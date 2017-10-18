@@ -3,9 +3,7 @@ package ru.atc.bclient.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.AttributeOverride;
@@ -42,22 +40,18 @@ public class PaymentOrder extends BaseEntity {
     private LocalDate date;
 
     @OneToOne(optional = false)
-    @NonNull
     @JoinColumn(name = "sender_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity sender;
 
     @OneToOne(optional = false)
-    @NonNull
     @JoinColumn(name = "sender_account_id", referencedColumnName = "account_id")
     private Account senderAccount;
 
     @OneToOne(optional = false)
-    @NonNull
     @JoinColumn(name = "recipient_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity recipient;
 
     @OneToOne(optional = false)
-    @NonNull
     @JoinColumn(name = "recipient_account_id", referencedColumnName = "account_id")
     private Account recipientAccount;
 

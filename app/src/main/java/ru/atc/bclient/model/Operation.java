@@ -3,7 +3,6 @@ package ru.atc.bclient.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
@@ -40,12 +39,10 @@ public class Operation extends BaseEntity {
     private BigDecimal amount;
 
     @OneToOne(optional = false)
-    @NonNull
     @JoinColumn(name = "debet_account_id", referencedColumnName = "account_id")
     private Account debetAccount;
 
     @OneToOne(optional = false)
-    @NonNull
     @JoinColumn(name = "credit_account_id", referencedColumnName = "account_id")
     private Account creditAccount;
 
