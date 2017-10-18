@@ -8,6 +8,11 @@ spring:
   profiles:
     active: development
 
+  # Thymeleaf
+  thymeleaf:
+    mode: HTML
+    cache: false
+
 # Logging settings
 logging:
   pattern:
