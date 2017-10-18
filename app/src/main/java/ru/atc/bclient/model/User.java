@@ -1,42 +1,56 @@
 package ru.atc.bclient.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "dim_user")
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 @SequenceGenerator(name = "default_gen", sequenceName = "seq_user_id")
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "user.legalEntities",
+                attributeNodes = @NamedAttributeNode("legalEntities")),
+        @NamedEntityGraph(name = "user.legalEntities.accounts",
+                attributeNodes = @NamedAttributeNode(value = "legalEntities", subgraph = "accounts"),
+                subgraphs = @NamedSubgraph(name = "accounts", attributeNodes = @NamedAttributeNode("accounts")))
+})
 public class User extends BaseEntity {
+    @NonNull
     @Column(name = "user_login")
     @NotNull
     @Size(max = 100)
     private String login;
 
+    @NonNull
     @Column(name = "user_full_name")
     @NotNull
     @Size(max = 300)
     private String fullName;
 
+    @NonNull
     @Column(name = "user_password")
     @NotNull
     @Size(max = 100)
     private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "rel_user_legal_entity",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "legal_entity_id"))
+    private Set<LegalEntity> legalEntities;
 
     public User(Integer id, String login, String fullName, String password) {
         this(login, fullName, password);
