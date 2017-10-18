@@ -13,7 +13,7 @@ function showNotification(type, message) {
             type: type,
             placement: {
                 from: "bottom",
-                align: "right"
+                align: "center"
             },
             mouse_over: "pause"
         }

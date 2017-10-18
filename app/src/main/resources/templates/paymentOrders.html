@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments::headTag('Банк-клиент')">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/animate.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="../static/js/util.js"></script>
+
+</head>
+
+<body>
+<!--/*@thymesVar id="notification" type="ru.atc.bclient.to.Notification"*/-->
+<th:block th:include="fragments::notification" th:if="${notification}!=null"/>
+
+<th:block th:include="fragments::header"/>
+
+<div class="jumbotron">
+    <div class="pad container">
+        <table class="table">
+            <tr>
+                <th>№</th>
+                <th class="date-col">Дата</th>
+                <th>Отправитель /<br/>Счет отправителя</th>
+                <th>Получатель /<br/>Счет получателя</th>
+                <th>Договор</th>
+                <th>Код валюты</th>
+                <th>Сумма</th>
+                <th>Назначение</th>
+                <th>Приоритет</th>
+                <th>Статус</th>
+                <th>Причина отказа</th>
+            </tr>
+            <tr th:each="paymentOrder, status : ${paymentOrders}">
+                <td>
+                    <span th:text="${paymentOrder.number}">#</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.date}">2017-01-01</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.sender.shortName}">Отправитель</span><br/>
+                    <span th:text="${paymentOrder.senderAccount.number}">Счет</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.recipient.shortName}">Получатель</span><br/>
+                    <span th:text="${paymentOrder.recipientAccount.number}">Счет</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.contract.number}">#</span> от
+                    <span th:text="${paymentOrder.contract.openDate}">2017-01-01</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.currencyCode}">123</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.amount}">1000.00</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.reason}">Назначение</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.priorityCode}">05</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.status}">Новый</span>
+                </td>
+                <td>
+                    <span th:text="${paymentOrder.rejectReason}">Причина отказа</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<th:block th:include="fragments::footer"/>
+</body>
+</html>
