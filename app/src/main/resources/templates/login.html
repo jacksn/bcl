@@ -27,7 +27,7 @@
     <div class="container pad fill">
         <div class="row">
             <div class="col-sm-2 col-md-offset-5">
-                <form class="form-horizontal form-login" th:action="@{/login}" method="post">
+                <form class="form-horizontal form-login" id="login-form" th:action="@{/login}" method="post">
                     <div class="form-group input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                         <input class="form-control" type="text" name='username' placeholder="Логин"/>
@@ -41,10 +41,33 @@
                         <button type="submit" class="btn btn-success btn-block">Вход</button>
                     </div>
                 </form>
+
+                <div class="form-group">
+                    <button class="btn btn-info btn-block"
+                            onclick="setCredentials('aivanov', 'ivanov')">Войти как Иванов
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-info btn-block"
+                            onclick="setCredentials('apetrov', 'petrov')">Войти как Петров
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-info btn-block"
+                            onclick="setCredentials('asidorov', 'sidorov')">Войти как Сидоров
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <th:block th:include="fragments::footer"/>
+<script type="text/javascript">
+    function setCredentials(username, password) {
+        $('input[name="username"]').val(username);
+        $('input[name="password"]').val(password);
+        $('#login-form').submit();
+    }
+</script>
 </body>
 </html>
