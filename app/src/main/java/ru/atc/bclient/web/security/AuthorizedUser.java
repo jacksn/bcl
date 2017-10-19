@@ -3,9 +3,11 @@ package ru.atc.bclient.web.security;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import ru.atc.bclient.model.entity.LegalEntity;
 import ru.atc.bclient.model.entity.User;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,5 +38,9 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
 
     public Integer getId() {
         return user.getId();
+    }
+
+    public Set<LegalEntity> getLegalEntities() {
+        return user.getLegalEntities();
     }
 }
