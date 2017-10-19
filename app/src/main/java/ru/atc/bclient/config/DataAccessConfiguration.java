@@ -13,6 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         @PropertySource(value = "classpath:db/${db_config_file}", ignoreResourceNotFound = true)})
 @EnableTransactionManagement
 @EntityScan("ru.atc.bclient.model")
-@EnableJpaRepositories(basePackages = "ru.atc.bclient.repository")
+@EnableJpaRepositories(basePackages = "ru.atc.bclient.model.repository")
 public class DataAccessConfiguration {
 }
