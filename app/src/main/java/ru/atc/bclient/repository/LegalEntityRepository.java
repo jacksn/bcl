@@ -11,7 +11,4 @@ import java.util.List;
 @Transactional
 @Repository
 public interface LegalEntityRepository extends JpaRepository<LegalEntity, Integer> {
-    @Query(value = "SELECT * FROM dim_legal_entity l JOIN rel_user_legal_entity ule ON l.legal_entity_id = ule.legal_entity_id WHERE ule.user_id = ?1",
-            nativeQuery = true)
-    List<LegalEntity> getByUserId(int userId);
 }
