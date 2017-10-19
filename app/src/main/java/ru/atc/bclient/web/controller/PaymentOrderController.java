@@ -6,26 +6,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.atc.bclient.model.entity.LegalEntity;
-import ru.atc.bclient.model.repository.LegalEntityRepository;
 import ru.atc.bclient.model.repository.PaymentOrderRepository;
 import ru.atc.bclient.web.security.AuthorizedUser;
 
-import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/payment")
 public class PaymentOrderController {
     private PaymentOrderRepository paymentOrderRepository;
-    private LegalEntityRepository legalEntityRepository;
 
-    public PaymentOrderController(PaymentOrderRepository paymentOrderRepository, LegalEntityRepository legalEntityRepository) {
+    public PaymentOrderController(PaymentOrderRepository paymentOrderRepository) {
         this.paymentOrderRepository = paymentOrderRepository;
-        this.legalEntityRepository = legalEntityRepository;
     }
 
     @GetMapping
     public String getPaymentOrders(Model model, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        List<LegalEntity> legalEntities = legalEntityRepository.getByUserId(authorizedUser.getId());
+        Set<LegalEntity> legalEntities = authorizedUser.getLegalEntities();
         model.addAttribute("paymentOrders", paymentOrderRepository.getAllBySenderIn(legalEntities));
         return "paymentOrders";
     }
