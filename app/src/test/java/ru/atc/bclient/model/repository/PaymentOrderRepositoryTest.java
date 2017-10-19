@@ -1,8 +1,8 @@
-package ru.atc.bclient.repository;
+package ru.atc.bclient.model.repository;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.atc.bclient.model.PaymentOrder;
+import ru.atc.bclient.model.entity.PaymentOrder;
 
 import java.util.List;
 

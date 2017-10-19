@@ -1,6 +1,6 @@
 package ru.atc.bclient;
 
-import ru.atc.bclient.model.Contract;
+import ru.atc.bclient.model.entity.Contract;
 
 import java.time.LocalDate;
 import java.util.Arrays;

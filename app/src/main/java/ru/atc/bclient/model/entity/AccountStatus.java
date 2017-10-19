@@ -1,4 +1,4 @@
-package ru.atc.bclient.model;
+package ru.atc.bclient.model.entity;
 
 public enum AccountStatus {
     NONE("Отсутствует"),

@@ -1,11 +1,11 @@
-package ru.atc.bclient.web;
+package ru.atc.bclient.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.atc.bclient.to.Notification;
-import ru.atc.bclient.to.NotificationType;
+import ru.atc.bclient.web.to.Notification;
+import ru.atc.bclient.web.to.NotificationType;
 
 @Controller
 @RequestMapping("/")

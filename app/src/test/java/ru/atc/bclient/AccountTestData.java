@@ -1,7 +1,7 @@
 package ru.atc.bclient;
 
-import ru.atc.bclient.model.Account;
-import ru.atc.bclient.model.AccountStatus;
+import ru.atc.bclient.model.entity.Account;
+import ru.atc.bclient.model.entity.AccountStatus;
 
 import java.util.Arrays;
 import java.util.List;

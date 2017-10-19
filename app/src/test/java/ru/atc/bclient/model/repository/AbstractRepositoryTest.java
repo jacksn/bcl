@@ -1,4 +1,4 @@
-package ru.atc.bclient.repository;
+package ru.atc.bclient.model.repository;
 
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

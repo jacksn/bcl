@@ -1,12 +1,11 @@
 package ru.atc.bclient;
 
-import ru.atc.bclient.model.PaymentOrder;
-import ru.atc.bclient.model.PaymentOrderStatus;
+import ru.atc.bclient.model.entity.PaymentOrder;
+import ru.atc.bclient.model.entity.PaymentOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static ru.atc.bclient.AccountTestData.ACCOUNT_1;

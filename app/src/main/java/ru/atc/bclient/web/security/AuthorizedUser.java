@@ -1,9 +1,9 @@
-package ru.atc.bclient.security;
+package ru.atc.bclient.web.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import ru.atc.bclient.model.User;
+import ru.atc.bclient.model.entity.User;
 
 import java.util.Collections;
 

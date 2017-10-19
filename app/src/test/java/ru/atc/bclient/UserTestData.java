@@ -1,7 +1,7 @@
 package ru.atc.bclient;
 
-import ru.atc.bclient.model.LegalEntity;
-import ru.atc.bclient.model.User;
+import ru.atc.bclient.model.entity.LegalEntity;
+import ru.atc.bclient.model.entity.User;
 
 import java.util.Arrays;
 import java.util.HashSet;

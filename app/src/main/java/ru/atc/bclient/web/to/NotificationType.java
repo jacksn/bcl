@@ -1,4 +1,4 @@
-package ru.atc.bclient.to;
+package ru.atc.bclient.web.to;
 
 public enum NotificationType {
     INFO("info"),

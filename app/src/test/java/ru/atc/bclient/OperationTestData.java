@@ -1,6 +1,6 @@
 package ru.atc.bclient;
 
-import ru.atc.bclient.model.Operation;
+import ru.atc.bclient.model.entity.Operation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

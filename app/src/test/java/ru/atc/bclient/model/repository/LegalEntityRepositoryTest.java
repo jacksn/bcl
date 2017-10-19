@@ -1,8 +1,8 @@
-package ru.atc.bclient.repository;
+package ru.atc.bclient.model.repository;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.atc.bclient.model.LegalEntity;
+import ru.atc.bclient.model.entity.LegalEntity;
 
 import java.util.List;
 

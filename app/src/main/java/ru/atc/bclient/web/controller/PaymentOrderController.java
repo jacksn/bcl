@@ -1,14 +1,14 @@
-package ru.atc.bclient.web;
+package ru.atc.bclient.web.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.atc.bclient.model.LegalEntity;
-import ru.atc.bclient.repository.LegalEntityRepository;
-import ru.atc.bclient.repository.PaymentOrderRepository;
-import ru.atc.bclient.security.AuthorizedUser;
+import ru.atc.bclient.model.entity.LegalEntity;
+import ru.atc.bclient.model.repository.LegalEntityRepository;
+import ru.atc.bclient.model.repository.PaymentOrderRepository;
+import ru.atc.bclient.web.security.AuthorizedUser;
 
 import java.util.List;
 

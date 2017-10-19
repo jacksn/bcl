@@ -1,11 +1,11 @@
-package ru.atc.bclient.repository;
+package ru.atc.bclient.model.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.atc.bclient.model.Account;
-import ru.atc.bclient.model.LegalEntity;
-import ru.atc.bclient.model.PaymentOrder;
+import ru.atc.bclient.model.entity.Account;
+import ru.atc.bclient.model.entity.LegalEntity;
+import ru.atc.bclient.model.entity.PaymentOrder;
 
 import javax.persistence.OrderBy;
 import java.util.Collection;

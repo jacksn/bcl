@@ -1,6 +1,6 @@
 package ru.atc.bclient;
 
-import ru.atc.bclient.model.Bank;
+import ru.atc.bclient.model.entity.Bank;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,10 +1,9 @@
-package ru.atc.bclient.repository;
+package ru.atc.bclient.model.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.atc.bclient.model.User;
+import ru.atc.bclient.model.entity.User;
 
 @Transactional
 @Repository
