@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.AttributeOverride;
@@ -11,18 +12,18 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(callSuper = true)
 @Entity
 @Table(name = "dim_contract")
 @AttributeOverride(name = "id", column = @Column(name = "contract_id"))
@@ -48,11 +49,11 @@ public class Contract extends BaseEntity {
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     private LocalDate closeDate;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "issuer_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity issuer;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "signer_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity signer;
 
@@ -65,39 +66,5 @@ public class Contract extends BaseEntity {
                     LegalEntity signer, String currencyCode) {
         this(name, number, openDate, closeDate, issuer, signer, currencyCode);
         setId(id);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Contract contract = (Contract) o;
-        return Objects.equals(name, contract.name) &&
-                Objects.equals(number, contract.number) &&
-                Objects.equals(openDate, contract.openDate) &&
-                Objects.equals(closeDate, contract.closeDate) &&
-                Objects.equals(issuer, contract.issuer) &&
-                Objects.equals(signer, contract.signer) &&
-                Objects.equals(currencyCode, contract.currencyCode);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name, number, openDate, closeDate, issuer, signer, currencyCode);
-    }
-
-    @Override
-    public String toString() {
-        return "Contract{" +
-                "id='" + getId() + '\'' +
-                ", name='" + name + '\'' +
-                ", number='" + number + '\'' +
-                ", openDate=" + openDate +
-                ", closeDate=" + closeDate +
-                ", issuer=" + issuer +
-                ", signer=" + signer +
-                ", currencyCode='" + currencyCode + '\'' +
-                '}';
     }
 }

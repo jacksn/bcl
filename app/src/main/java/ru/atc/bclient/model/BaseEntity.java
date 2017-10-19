@@ -1,6 +1,7 @@
 package ru.atc.bclient.model;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import javax.persistence.MappedSuperclass;
 @Access(AccessType.FIELD)
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public abstract class BaseEntity {
     @Id
     // PROPERTY access for id due to bug: https://hibernate.atlassian.net/browse/HHH-3718
@@ -31,22 +33,7 @@ public abstract class BaseEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BaseEntity that = (BaseEntity) o;
-
-        return id != null ? id.equals(that.id) : that.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    @Override
     public String toString() {
-        return String.format("Entity %s (%s)", getClass().getName(), getId());
+        return "id=" + id;
     }
 }

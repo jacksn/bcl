@@ -13,12 +13,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(callSuper = true)
 @Entity
 @Table(name = "dim_bank")
 @AttributeOverride(name = "id", column = @Column(name = "bank_id"))
@@ -51,35 +51,5 @@ public class Bank extends BaseEntity {
     public Bank(Integer id, String name, String inn, String kpp, String bic, String corrAccount) {
         this(name, inn, kpp, bic, corrAccount);
         setId(id);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Bank bank = (Bank) o;
-        return Objects.equals(name, bank.name) &&
-                Objects.equals(inn, bank.inn) &&
-                Objects.equals(kpp, bank.kpp) &&
-                Objects.equals(bic, bank.bic) &&
-                Objects.equals(corrAccount, bank.corrAccount);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name, inn, kpp, bic, corrAccount);
-    }
-
-    @Override
-    public String toString() {
-        return "Bank{" +
-                "id='" + getId() + '\'' +
-                ", name='" + name + '\'' +
-                ", inn='" + inn + '\'' +
-                ", kpp='" + kpp + '\'' +
-                ", bic='" + bic + '\'' +
-                ", corrAccount='" + corrAccount + '\'' +
-                '}';
     }
 }
