@@ -26,10 +26,12 @@
     <div class="container pad">
         <div class="row" th:each="legalEntity, status : ${legalEntities}">
             <div class="panel">
-                <div class="panel-body">
+                <div class="panel-heading">
                     <h3>
                         <span th:text="${legalEntity.shortName}">Организация</span>
                     </h3>
+                </div>
+                <div class="panel-body">
                     <table class="table table-hover">
                         <thead>
                         <tr>

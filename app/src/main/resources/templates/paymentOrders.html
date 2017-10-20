@@ -27,9 +27,11 @@
     <div class="container">
         <div class="row" th:each="legalEntityEntry : ${paymentOrderMap}">
             <div class="panel">
-                <div class="panel-body">
+                <div class="panel-heading">
                     <h3 th:text="${legalEntityEntry.key.shortName}">Организация</h3>
                     <hr>
+                </div>
+                <div class="panel-body">
                     <div th:each="accountEntry : ${legalEntityEntry.value}">
                         <div>
                             <div class="col-md-8">
