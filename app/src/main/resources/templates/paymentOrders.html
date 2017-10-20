@@ -24,54 +24,79 @@
 <th:block th:include="fragments::header('payment')"/>
 
 <div class="jumbotron">
-    <div class="pad container">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>№</th>
-                <th class="date-col">Дата</th>
-                <th>Отправитель /<br/>Счет отправителя</th>
-                <th>Получатель /<br/>Счет получателя</th>
-                <th>Договор</th>
-                <th>Код валюты</th>
-                <th>Сумма</th>
-                <th>Приоритет</th>
-                <th>Статус</th>
-            </tr>
-            </thead>
-            <tr th:each="paymentOrder, status : ${paymentOrders}" th:title="${paymentOrder.reason}">
-                <td>
-                    <span th:text="${paymentOrder.number}">#</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.date}">2017-01-01</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.sender.shortName}">Отправитель</span><br/>
-                    <span th:text="${paymentOrder.senderAccount.number}">Счет</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.recipient.shortName}">Получатель</span><br/>
-                    <span th:text="${paymentOrder.recipientAccount.number}">Счет</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.contract.number}">#</span> от
-                    <span th:text="${paymentOrder.contract.openDate}">2017-01-01</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.currencyCode}">123</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.amount}">1000.00</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.priorityCode}">05</span>
-                </td>
-                <td th:title="${paymentOrder.rejectReason}">
-                    <span th:text="${paymentOrder.status}">Новый</span>
-                </td>
-            </tr>
-        </table>
+    <div class="container">
+        <div class="row" th:each="legalEntityEntry : ${paymentOrderMap}">
+            <div class="panel">
+                <div class="panel-body">
+                    <h3 th:text="${legalEntityEntry.key.shortName}">Организация</h3>
+                    <hr>
+                    <div th:each="accountEntry : ${legalEntityEntry.value}">
+                        <div>
+                            <div class="col-md-8">
+                                <h4 th:text="${accountEntry.key.name + ': ' + accountEntry.key.number
+                                + ' (код валюты: ' + accountEntry.key.currencyCode + ')'}">
+                                    Cчет: номер (код валюты: 000)
+                                </h4>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <a class="btn btn-success">Создать платежное поручение</a>
+                            </div>
+                        </div>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>№</th>
+                                <th class="date-col">Дата</th>
+                                <th>Получатель</th>
+                                <th>Счет получателя</th>
+                                <th>Договор</th>
+                                <th>Код валюты</th>
+                                <th>Сумма</th>
+                                <th>Приоритет</th>
+                                <th>Статус</th>
+                            </tr>
+                            </thead>
+                            <tr th:if="${accountEntry.value.size() == 0}">
+                                <td></td>
+                                <td colspan="8">Нет платежных поручений</td>
+                            </tr>
+                            <tr th:each="paymentOrder, status : ${accountEntry.value}"
+                                th:title="${paymentOrder.reason}">
+                                <td>
+                                    <span th:text="${paymentOrder.number}">#</span>
+                                </td>
+                                <td>
+                                    <span th:text="${paymentOrder.date}">2017-01-01</span>
+                                </td>
+                                <td>
+                                    <span th:text="${paymentOrder.recipient.shortName}">Получатель</span><br/>
+                                </td>
+                                <td>
+                                    <span th:text="${paymentOrder.recipientAccount.number}">Счет</span>
+                                </td>
+                                <td>
+                                    <span th:text="${paymentOrder.contract.number}">#</span> от
+                                    <span th:text="${paymentOrder.contract.openDate}">2017-01-01</span>
+                                </td>
+                                <td>
+                                    <span th:text="${paymentOrder.currencyCode}">123</span>
+                                </td>
+                                <td>
+                                    <span th:text="${paymentOrder.amount}">1000.00</span>
+                                </td>
+                                <td>
+                                    <span th:text="${paymentOrder.priorityCode}">05</span>
+                                </td>
+                                <td th:title="${paymentOrder.rejectReason}">
+                                    <span th:text="${paymentOrder.status}">Новый</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr/>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <th:block th:include="fragments::footer"/>

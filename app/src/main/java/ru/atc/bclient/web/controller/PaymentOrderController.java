@@ -5,25 +5,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.atc.bclient.model.entity.LegalEntity;
-import ru.atc.bclient.model.repository.PaymentOrderRepository;
+import ru.atc.bclient.service.PaymentOrderService;
 import ru.atc.bclient.web.security.AuthorizedUser;
-
-import java.util.Set;
 
 @Controller
 @RequestMapping("/payment")
 public class PaymentOrderController {
-    private PaymentOrderRepository paymentOrderRepository;
+    private PaymentOrderService paymentOrderService;
 
-    public PaymentOrderController(PaymentOrderRepository paymentOrderRepository) {
-        this.paymentOrderRepository = paymentOrderRepository;
+    public PaymentOrderController(PaymentOrderService paymentOrderService) {
+        this.paymentOrderService = paymentOrderService;
     }
 
     @GetMapping
     public String getPaymentOrders(Model model, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        Set<LegalEntity> legalEntities = authorizedUser.getLegalEntities();
-        model.addAttribute("paymentOrders", paymentOrderRepository.getAllBySenderIn(legalEntities));
+        model.addAttribute("paymentOrderMap",
+                paymentOrderService.getAllBySendersGroupByLegalEntityAndAccount(authorizedUser.getLegalEntities()));
         return "paymentOrders";
     }
 }
