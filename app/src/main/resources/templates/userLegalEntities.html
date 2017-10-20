@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments::headTag('Банк-клиент - Главная')">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/animate.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="../static/js/util.js"></script>
+</head>
+
+<body>
+<!--/*@thymesVar id="notification" type="ru.atc.bclient.web.to.Notification"*/-->
+<th:block th:include="fragments::notification" th:if="${notification}!=null"/>
+
+<th:block th:include="fragments::header('main')"/>
+
+<div class="jumbotron">
+    <div class="container pad">
+        <div class="row" th:each="legalEntity, status : ${legalEntities}">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3>
+                        <span th:text="${legalEntity.fullName}">Организация</span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Наименование</th>
+                            <th>Номер счета</th>
+                            <th>Банк</th>
+                            <th>Код валюты</th>
+                            <th>Статус</th>
+                        </tr>
+                        </thead>
+                        <tr th:each="account, status : ${legalEntity.accounts}">
+                            <td>
+                                <span th:text="${account.name}">Расчётный счёт</span>
+                            </td>
+                            <td>
+                                <span th:text="${account.number}">12345678901234567890</span>
+                            </td>
+                            <td>
+                                <span th:text="${account.bank.name}">ОАО "Банк"</span>
+                            </td>
+                            <td>
+                                <span th:text="${account.currencyCode}">123</span>
+                            </td>
+                            <td>
+                                <span th:text="${account.status}">Активный</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="fragments::footer"/>
+</body>
+</html>
