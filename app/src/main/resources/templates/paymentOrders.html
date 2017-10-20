@@ -21,11 +21,12 @@
 <!--/*@thymesVar id="notification" type="ru.atc.bclient.web.to.Notification"*/-->
 <th:block th:include="fragments::notification" th:if="${notification}!=null"/>
 
-<th:block th:include="fragments::header"/>
+<th:block th:include="fragments::header('payment')"/>
 
 <div class="jumbotron">
     <div class="pad container">
-        <table class="table">
+        <table class="table table-hover">
+            <thead>
             <tr>
                 <th>№</th>
                 <th class="date-col">Дата</th>
@@ -34,12 +35,11 @@
                 <th>Договор</th>
                 <th>Код валюты</th>
                 <th>Сумма</th>
-                <th>Назначение</th>
                 <th>Приоритет</th>
                 <th>Статус</th>
-                <th>Причина отказа</th>
             </tr>
-            <tr th:each="paymentOrder, status : ${paymentOrders}">
+            </thead>
+            <tr th:each="paymentOrder, status : ${paymentOrders}" th:title="${paymentOrder.reason}">
                 <td>
                     <span th:text="${paymentOrder.number}">#</span>
                 </td>
@@ -65,16 +65,10 @@
                     <span th:text="${paymentOrder.amount}">1000.00</span>
                 </td>
                 <td>
-                    <span th:text="${paymentOrder.reason}">Назначение</span>
-                </td>
-                <td>
                     <span th:text="${paymentOrder.priorityCode}">05</span>
                 </td>
-                <td>
+                <td th:title="${paymentOrder.rejectReason}">
                     <span th:text="${paymentOrder.status}">Новый</span>
-                </td>
-                <td>
-                    <span th:text="${paymentOrder.rejectReason}">Причина отказа</span>
                 </td>
             </tr>
         </table>

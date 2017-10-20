@@ -40,7 +40,7 @@
 </th:block>
 
 <body>
-<th:block th:fragment="header">
+<th:block th:fragment="header(page)">
     <header class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
@@ -58,19 +58,19 @@
             </div>
             <nav class="collapse navbar-collapse" id="bs-navbar">
                 <ul class="nav navbar-nav">
-                    <li class="active">
+                    <li th:classappend="${page=='main' ? 'active' : '' }">
                         <a href="/" th:href="@{/}">
                             Главная
                         </a>
                     </li>
-                    <li>
-                        <a href="accounts" th:href="@{/accounts}">
-                            Рассчетные счета
+                    <li th:classappend="${page=='contracts' ? 'active' : '' }">
+                        <a href="contracts.html" th:href="@{/contracts}">
+                            Договоры
                         </a>
                     </li>
-                    <li>
-                        <a href="legalEntities" th:href="@{/legalEntities}">
-                            Организации
+                    <li th:classappend="${page=='payment' ? 'active' : '' }">
+                        <a href="paymentOrders.html" th:href="@{/payment}">
+                            Платежи
                         </a>
                     </li>
                 </ul>
@@ -98,7 +98,9 @@
 
 
 <th:block th:fragment="footer">
-    <footer><div class="container">© 2017</div></footer>
+    <footer>
+        <div class="container">© 2017</div>
+    </footer>
 </th:block>
 
 </body>
