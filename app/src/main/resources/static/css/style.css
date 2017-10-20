@@ -11,7 +11,7 @@ body {
     text-transform: uppercase;
 }
 
-.order-count>input {
+.order-count > input {
     width: 52px;
     text-align: right;
 }
@@ -21,7 +21,7 @@ body {
     padding: 15px 15px;
 }
 
-.navbar-brand>img {
+.navbar-brand > img {
     margin: -4px 10px 4px 0px;
 }
 
@@ -62,4 +62,13 @@ i.fa {
 
 .form-login {
     margin-top: 20%;
+}
+
+.panel-body {
+    padding-top: 10px;
+}
+
+hr {
+    margin-top: 15px;
+    margin-bottom: 5px;
 }
