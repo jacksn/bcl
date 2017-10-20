@@ -1,10 +1,11 @@
-package ru.atc.bclient.service;
+package ru.atc.bclient.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.atc.bclient.model.entity.Account;
 import ru.atc.bclient.model.entity.LegalEntity;
 import ru.atc.bclient.model.entity.PaymentOrder;
 import ru.atc.bclient.model.repository.PaymentOrderRepository;
+import ru.atc.bclient.service.PaymentOrderService;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -1,9 +1,10 @@
-package ru.atc.bclient.service;
+package ru.atc.bclient.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.atc.bclient.model.entity.Contract;
 import ru.atc.bclient.model.entity.LegalEntity;
 import ru.atc.bclient.model.repository.ContractRepository;
+import ru.atc.bclient.service.ContractService;
 
 import java.util.Collection;
 import java.util.HashMap;
