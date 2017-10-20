@@ -28,4 +28,4 @@ logging:
 server:
   port: 8085
   contextPath: /client
-  session.timeout: 30
+  session.timeout: 300
