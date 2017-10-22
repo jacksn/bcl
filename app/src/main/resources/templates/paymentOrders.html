@@ -41,7 +41,18 @@
                                 </h4>
                             </div>
                             <div class="col-md-4 text-right">
-                                <a class="btn btn-success">Создать платежное поручение</a>
+                                <a class="btn btn-info"
+                                   th:if="${accountEntry.key.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
+                                    Создать платежное поручение
+                                </a>
+                                <span class="label label-warning label-md"
+                                      th:if="${accountEntry.key.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
+                                    Счет заблокирован
+                                </span>
+                                <span class="label label-default label-md"
+                                      th:if="${accountEntry.key.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
+                                    Счет закрыт
+                                </span>
                             </div>
                         </div>
                         <table class="table table-hover">
