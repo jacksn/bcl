@@ -56,7 +56,18 @@
                                 <span th:text="${account.currencyCode}">123</span>
                             </td>
                             <td>
-                                <span th:text="${account.status}">Активный</span>
+                                <span class="label label-success"
+                                   th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
+                                    Активен
+                                </span>
+                                <span class="label label-warning"
+                                      th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
+                                    Заблокирован
+                                </span>
+                                <span class="label label-default"
+                                      th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
+                                    Закрыт
+                                </span>
                             </td>
                         </tr>
                     </table>
