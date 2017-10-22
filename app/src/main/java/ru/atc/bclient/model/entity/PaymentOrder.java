@@ -11,7 +11,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -79,7 +78,6 @@ public class PaymentOrder extends BaseEntity {
 
     @Column(name = "payment_order_status_id")
     @NotNull
-    @Enumerated
     private PaymentOrderStatus status;
 
     @Column(name = "reject_reason")
