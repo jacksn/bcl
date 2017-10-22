@@ -10,7 +10,6 @@ import lombok.ToString;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -59,7 +58,6 @@ public class Account extends BaseEntity {
     @NonNull
     @Column(name = "account_status_id")
     @NotNull
-    @Enumerated
     private AccountStatus status;
 
     public Account(Integer id, String name, String number, LegalEntity legalEntity, Bank bank, String currencyCode, AccountStatus status) {
