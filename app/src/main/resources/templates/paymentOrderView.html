@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments::headTag('Банк-клиент')">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/animate.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="../static/js/util.js"></script>
+
+</head>
+
+<body>
+<!--/*@thymesVar id="notification" type="ru.atc.bclient.web.to.Notification"*/-->
+<th:block th:include="fragments::notification" th:if="${notification}!=null"/>
+
+<th:block th:include="fragments::header('payment')"/>
+
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 th:text="'Платежное поручение № '
+                    + ${paymentOrder.number}
+                    + ' от ' + ${paymentOrder.date}">
+                        Платежное поручение</h3>
+                    <hr/>
+                </div>
+                <div class="panel-body">
+                    <h4><strong>Отправитель: </strong></h4>
+                    <strong>Наименование: </strong>
+                    <span th:text="${paymentOrder.sender.fullName}"></span>
+                    <br/>
+                    <strong>Адрес: </strong>
+                    <span th:text="${paymentOrder.sender.address}"></span>
+                    <br/>
+                    <strong>ИНН: </strong>
+                    <span th:text="${paymentOrder.sender.inn}"></span>
+                    <br/>
+                    <strong>КПП: </strong>
+                    <span th:text="${paymentOrder.sender.kpp}"></span>
+                    <br/>
+                    <strong>ОГРН: </strong>
+                    <span th:text="${paymentOrder.sender.ogrn}"></span>
+                    <br/>
+                    <strong>Счет отправителя: </strong>
+                    <span th:text="${paymentOrder.senderAccount.name}
+                                       + ' ' + ${paymentOrder.senderAccount.number}
+                                       + ' в ' + ${paymentOrder.senderAccount.bank.name}"></span>
+                    <br/>
+                    <br/>
+                    <h4><strong>Получатель: </strong></h4>
+                    <strong>Наименование: </strong>
+                    <span th:text="${paymentOrder.recipient.fullName}"></span>
+                    <br/>
+                    <strong>Адрес: </strong>
+                    <span th:text="${paymentOrder.recipient.address}"></span>
+                    <br/>
+                    <strong>ИНН: </strong>
+                    <span th:text="${paymentOrder.recipient.inn}"></span>
+                    <br/>
+                    <strong>КПП: </strong>
+                    <span th:text="${paymentOrder.recipient.kpp}"></span>
+                    <br/>
+                    <strong>ОГРН: </strong>
+                    <span th:text="${paymentOrder.recipient.ogrn}"></span>
+                    <br/>
+                    <strong>Счет отправителя: </strong>
+                    <span th:text="${paymentOrder.recipientAccount.name}
+                                       + ' ' + ${paymentOrder.recipientAccount.number}
+                                       + ' в ' + ${paymentOrder.recipientAccount.bank.name}"></span>
+                    <br/> <br/>
+
+                    <h4><strong>Договор: </strong></h4>
+                    <span th:if="${paymentOrder.contract != null}" th:text="${paymentOrder.contract.name}
+                                       + ' № ' + ${paymentOrder.contract.number}
+                                       + ' от ' + ${paymentOrder.contract.openDate}">
+                    </span>
+
+                    <br/> <br/>
+
+                    <h4><strong>Назначение платежа: </strong></h4>
+                    <span th:text="${paymentOrder.reason != null ? paymentOrder.reason : ''}"></span>
+
+                    <br/> <br/>
+
+                    <h4>
+                        <strong>Приоритет: </strong>
+                        <span th:text="${paymentOrder.priorityCode != null ? paymentOrder.priorityCode : ''}"></span>
+                    </h4>
+
+                    <br/>
+
+                    <h4>
+                        <strong>Сумма: </strong>
+                        <span th:text="${paymentOrder.amount + ' (код валюты: ' + paymentOrder.currencyCode + ')'}"></span>
+                    </h4>
+
+                    <br/>
+
+                    <h4>
+                        <strong>Статус: </strong>
+                        <span class="label label-primary label-md"
+                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).NEW}"
+                              th:text="${paymentOrder.status}">
+                        </span>
+                        <span class="label label-info label-md"
+                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).ACCEPTED}"
+                              th:text="${paymentOrder.status}">
+                        </span>
+                        <span class="label label-default label-md"
+                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).CANCELLED}"
+                              th:text="${paymentOrder.status}">
+                        </span>
+                        <span class="label label-warning label-md"
+                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).IN_PROGRESS}"
+                              th:text="${paymentOrder.status}">
+                        </span>
+                        <span class="label label-success label-md"
+                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).EXECUTED}"
+                              th:text="${paymentOrder.status}">
+                        </span>
+                        <span class="label label-danger label-md"
+                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).REJECTED}"
+                              th:text="${paymentOrder.status}">
+                        </span>
+                    </h4>
+
+                    <br/>
+
+                    <div th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).REJECTED}">
+                        <h4><strong>Причина отказа: </strong></h4>
+                        <span th:text="${paymentOrder.rejectReason != null ? paymentOrder.rejectReason : ''}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="fragments::footer"/>
+</body>
+</html>

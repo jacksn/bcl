@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class PaymentOrderServiceImpl implements PaymentOrderService {
@@ -41,5 +42,10 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
             groupedPaymentOrders.get(paymentOrder.getSender()).get(paymentOrder.getSenderAccount()).add(paymentOrder);
         }
         return groupedPaymentOrders;
+    }
+
+    @Override
+    public PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, int id) {
+        return paymentOrderRepository.getBySenderInAndId(legalEntities, id);
     }
 }

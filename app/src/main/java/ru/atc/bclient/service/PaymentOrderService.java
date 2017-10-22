@@ -7,9 +7,12 @@ import ru.atc.bclient.model.entity.PaymentOrder;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface PaymentOrderService {
     List<PaymentOrder> getAllBySenders(Collection<LegalEntity> senders);
 
     Map<LegalEntity, Map<Account, List<PaymentOrder>>> getAllBySendersGroupByLegalEntityAndAccount(Collection<LegalEntity> senders);
+
+    PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, int id);
 }

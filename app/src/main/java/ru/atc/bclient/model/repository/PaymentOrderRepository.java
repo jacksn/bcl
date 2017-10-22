@@ -19,4 +19,6 @@ public interface PaymentOrderRepository extends JpaRepository<PaymentOrder, Inte
 
     @OrderBy("payment_order_date")
     List<PaymentOrder> getAllBySenderInAndSenderAccount(Collection<LegalEntity> legalEntities, Account senderAccount);
+
+    PaymentOrder getBySenderInAndId(Collection<LegalEntity> legalEntities, int id);
 }
