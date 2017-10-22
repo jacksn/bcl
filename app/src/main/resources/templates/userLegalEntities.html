@@ -23,54 +23,82 @@
 <th:block th:include="fragments::header('main')"/>
 
 <div class="jumbotron">
-    <div class="container pad">
-        <div class="row" th:each="legalEntity, status : ${legalEntities}">
+    <div class="container">
+        <div class="row">
             <div class="panel">
-                <div class="panel-heading">
-                    <h3>
-                        <span th:text="${legalEntity.shortName}">Организация</span>
-                    </h3>
-                </div>
                 <div class="panel-body">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Наименование</th>
-                            <th>Номер счета</th>
-                            <th>Банк</th>
-                            <th>Код валюты</th>
-                            <th>Статус</th>
-                        </tr>
-                        </thead>
-                        <tr th:each="account, status : ${legalEntity.accounts}">
-                            <td>
-                                <span th:text="${account.name}">Расчётный счёт</span>
-                            </td>
-                            <td>
-                                <span th:text="${account.number}">12345678901234567890</span>
-                            </td>
-                            <td>
-                                <span th:text="${account.bank.name}">ОАО "Банк"</span>
-                            </td>
-                            <td>
-                                <span th:text="${account.currencyCode}">123</span>
-                            </td>
-                            <td>
+                    <h3>Счета</h3>
+                    <hr/>
+                    <div th:if="${legalEntities.size() > 1}">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label for="leFilter">Фильтр </label>
+                                <select class="form-control"
+                                        id="leFilter"
+                                        onchange="filterEntries('legalEntities','legalEntity', this.value)"
+                                        title="Юридические лица">
+                                    <option value="ALL">Все юридические лица</option>
+                                    <option th:each="legalEntity : ${legalEntities}"
+                                            th:value="${legalEntity.id}"
+                                            th:text="${legalEntity.shortName}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="legalEntities">
+            <div class="row" th:each="legalEntity, status : ${legalEntities}"
+                 th:id="${'legalEntity_' + legalEntity.id}">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3>
+                            <span th:text="${legalEntity.shortName}">Организация</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Наименование</th>
+                                <th>Номер счета</th>
+                                <th>Банк</th>
+                                <th>Код валюты</th>
+                                <th>Статус</th>
+                            </tr>
+                            </thead>
+                            <tr th:each="account, status : ${legalEntity.accounts}">
+                                <td>
+                                    <span th:text="${account.name}">Расчётный счёт</span>
+                                </td>
+                                <td>
+                                    <span th:text="${account.number}">12345678901234567890</span>
+                                </td>
+                                <td>
+                                    <span th:text="${account.bank.name}">ОАО "Банк"</span>
+                                </td>
+                                <td>
+                                    <span th:text="${account.currencyCode}">123</span>
+                                </td>
+                                <td>
                                 <span class="label label-success"
-                                   th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
+                                      th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
                                     Активен
                                 </span>
-                                <span class="label label-warning"
-                                      th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
+                                    <span class="label label-warning"
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
                                     Заблокирован
                                 </span>
-                                <span class="label label-default"
-                                      th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
+                                    <span class="label label-default"
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
                                     Закрыт
                                 </span>
-                            </td>
-                        </tr>
-                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

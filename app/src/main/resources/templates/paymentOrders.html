@@ -27,20 +27,25 @@
     <div class="container">
         <div class="row">
             <div class="panel">
-                <div class="panel-heading">
-                    <h3>Платежные поручения</h3>
-                </div>
                 <div class="panel-body">
+                    <h3>Платежные поручения</h3>
+                    <hr/>
                     <div th:if="${paymentOrderMap.size() > 1}">
-                        Фильтр
-                        <select id="leFilter" onchange="filterEntries('legalEntities','legalEntity', this.value)"
-                                title="Юридические лица">
-                            <option value="ALL">Все юридические лица</option>
-                            <option th:each="legalEntityEntry : ${paymentOrderMap}"
-                                    th:value="${legalEntityEntry.key.id}"
-                                    th:text="${legalEntityEntry.key.shortName}">
-                            </option>
-                        </select>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label for="leFilter">Фильтр </label>
+                                <select class="form-control"
+                                        id="leFilter"
+                                        onchange="filterEntries('legalEntities','legalEntity', this.value)"
+                                        title="Юридические лица">
+                                    <option value="ALL">Все юридические лица</option>
+                                    <option th:each="legalEntityEntry : ${paymentOrderMap}"
+                                            th:value="${legalEntityEntry.key.id}"
+                                            th:text="${legalEntityEntry.key.shortName}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -53,16 +58,21 @@
                     <div class="panel-heading">
                         <h3 th:text="${legalEntityEntry.key.shortName}">Организация</h3>
                         <div th:if="${legalEntityEntry.value.size() > 1}">
-                            Фильтр
-                            <select id="accFilter"
-                                    th:onchange="'filterEntries(\'legalEntity_\'+' + ${legalEntityEntry.key.id}  +', \'account\', this.value)'"
-                                    title="Счета">
-                                <option value="ALL">Все счета</option>
-                                <option th:each="account : ${legalEntityEntry.value}"
-                                        th:value="${account.key.id}"
-                                        th:text="${account.key.name + ' (' +  account.key.number + ')'}">
-                                </option>
-                            </select>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label for="leFilter">Фильтр </label>
+                                    <select class="form-control"
+                                            id="accFilter"
+                                            th:onchange="'filterEntries(\'legalEntity_\'+' + ${legalEntityEntry.key.id}  +', \'account\', this.value)'"
+                                            title="Счета">
+                                        <option value="ALL">Все счета</option>
+                                        <option th:each="account : ${legalEntityEntry.value}"
+                                                th:value="${account.key.id}"
+                                                th:text="${account.key.name + ' (' +  account.key.number + ')'}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <hr>
                     </div>
@@ -138,7 +148,8 @@
                                         <span th:text="${paymentOrder.priorityCode}">05</span>
                                     </td>
                                     <td th:title="${paymentOrder.rejectReason}">
-                                        <span class="label label-success" th:text="${paymentOrder.status}">Новый</span>
+                                            <span class="label label-success"
+                                                  th:text="${paymentOrder.status}">Новый</span>
                                     </td>
                                     <td>
                                         <a class="btn btn-xs btn-info" title="Просмотреть"
@@ -162,6 +173,5 @@
     </div>
 </div>
 <th:block th:include="fragments::footer"/>
-<script type="text/javascript" src="../static/js/paymentUtil.js" th:src="@{/static/js/paymentUtil.js}"></script>
 </body>
 </html>

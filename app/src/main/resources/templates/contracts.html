@@ -25,59 +25,88 @@
 
 <div class="jumbotron">
     <div class="container">
-        <div class="row" th:each="mapEntry : ${contractMap}">
+        <div class="row">
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 th:text="${mapEntry.key.shortName}">Организация</h3>
-                    <hr/>
-                </div>
                 <div class="panel-body">
-                    <div>
-                        <div class="col-md-8">
-                            <h4>&nbsp;</h4>
+                    <h3>Договоры</h3>
+                    <hr/>
+                    <div th:if="${contractMap.size() > 1}">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label for="leFilter">Фильтр </label>
+                                <select class="form-control"
+                                        id="leFilter"
+                                        onchange="filterEntries('legalEntities','legalEntity', this.value)"
+                                        title="Юридические лица">
+                                    <option value="ALL">Все юридические лица</option>
+                                    <option th:each="mapEntry : ${contractMap}"
+                                            th:value="${mapEntry.key.id}"
+                                            th:text="${mapEntry.key.shortName}">
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-4 text-right">
-                            <a class="btn btn-success">Создать договор</a>
-                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="legalEntities">
+            <div class="row" th:each="mapEntry : ${contractMap}"
+                 th:id="${'legalEntity_' + mapEntry.key.id}">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 th:text="${mapEntry.key.shortName}">Организация</h3>
+                        <hr/>
+                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <div class="col-md-8">
+                                <h4>&nbsp;</h4>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <a class="btn btn-success">Создать договор</a>
+                            </div>
 
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Наименование</th>
-                                <th>№</th>
-                                <th class="date-col">Дата создания</th>
-                                <th class="date-col">Дата окончания</th>
-                                <th>Подписант</th>
-                                <th>Код валюты</th>
-                            </tr>
-                            </thead>
-                            <!--/*@thymesVar id="contract" type="ru.atc.bclient.model.entity.Contract"*/-->
-                            <tr th:each="contract : ${mapEntry.value}">
-                                <td>
-                                    <span th:text="${contract.name}">Наименование</span><br/>
-                                </td>
-                                <td>
-                                    <span th:text="${contract.number}">#</span>
-                                </td>
-                                <td>
-                                    <span th:text="${contract.openDate}">2017-01-01</span>
-                                </td>
-                                <td>
-                                    <span th:text="${contract.closeDate}">2017-12-31</span>
-                                </td>
-                                <td>
-                                    <span th:text="${contract.signer.shortName}">Организация</span>
-                                </td>
-                                <td>
-                                    <span th:text="${contract.currencyCode}">123</span>
-                                </td>
-                            </tr>
-                        </table>
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Наименование</th>
+                                    <th>№</th>
+                                    <th class="date-col">Дата создания</th>
+                                    <th class="date-col">Дата окончания</th>
+                                    <th>Подписант</th>
+                                    <th>Код валюты</th>
+                                </tr>
+                                </thead>
+                                <!--/*@thymesVar id="contract" type="ru.atc.bclient.model.entity.Contract"*/-->
+                                <tr th:each="contract : ${mapEntry.value}">
+                                    <td>
+                                        <span th:text="${contract.name}">Наименование</span><br/>
+                                    </td>
+                                    <td>
+                                        <span th:text="${contract.number}">#</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${contract.openDate}">2017-01-01</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${contract.closeDate}">2017-12-31</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${contract.signer.shortName}">Организация</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${contract.currencyCode}">123</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <th:block th:include="fragments::footer"/>
+</div>
+<th:block th:include="fragments::footer"/>
 </body>
 </html>
