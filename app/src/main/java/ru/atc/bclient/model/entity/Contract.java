@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -31,22 +32,24 @@ import java.time.LocalDate;
 public class Contract extends BaseEntity {
     @Column(name = "contract_name")
     @NotNull
-    @Size(max = 100)
+    @Size(min = 1, max = 100)
     private String name;
 
     @Column(name = "contract_num")
     @NotNull
-    @Size(max = 20)
+    @Size(min = 1, max = 20)
     private String number;
 
     @Column(name = "contract_open_date", columnDefinition = "DATE")
     @NotNull
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate openDate;
 
     @Column(name = "contract_close_date", columnDefinition = "DATE")
     @NotNull
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate closeDate;
 
     @ManyToOne(optional = false)
@@ -59,7 +62,7 @@ public class Contract extends BaseEntity {
 
     @Column(name = "currency_code")
     @NotNull
-    @Size(max = 10)
+    @Size(min = 1, max = 10)
     private String currencyCode;
 
     public Contract(Integer id, String name, String number, LocalDate openDate, LocalDate closeDate, LegalEntity issuer,

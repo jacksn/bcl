@@ -14,15 +14,15 @@ import java.util.Map;
 
 @Service
 public class ContractServiceImpl implements ContractService {
-    private ContractRepository contractRepository;
+    private ContractRepository repository;
 
-    public ContractServiceImpl(ContractRepository contractRepository) {
-        this.contractRepository = contractRepository;
+    public ContractServiceImpl(ContractRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public List<Contract> getAllByIssuers(Collection<LegalEntity> issuers) {
-        return contractRepository.getAllByIssuerIn(issuers);
+        return repository.getAllByIssuerIn(issuers);
     }
 
     @Override
@@ -37,4 +37,8 @@ public class ContractServiceImpl implements ContractService {
         return groupedContracts;
     }
 
+    @Override
+    public Contract save(Contract contract) {
+        return repository.save(contract);
+    }
 }
