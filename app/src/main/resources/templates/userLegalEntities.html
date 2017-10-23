@@ -67,6 +67,7 @@
                                 <th>Банк</th>
                                 <th>Код валюты</th>
                                 <th>Статус</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tr th:each="account, status : ${legalEntity.accounts}">
@@ -83,18 +84,23 @@
                                     <span th:text="${account.currencyCode}">123</span>
                                 </td>
                                 <td>
-                                <span class="label label-success"
-                                      th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
-                                    Активен
-                                </span>
-                                    <span class="label label-warning"
-                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
-                                    Заблокирован
-                                </span>
-                                    <span class="label label-default"
-                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
-                                    Закрыт
-                                </span>
+                                    <span class="label label-success"
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
+                                        Активен
+                                    </span>
+                                        <span class="label label-warning"
+                                              th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
+                                        Заблокирован
+                                    </span>
+                                        <span class="label label-default"
+                                              th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
+                                        Закрыт
+                                    </span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-info btn-xs" href="/account" th:href="@{'/account?id=' + ${account.id}}">
+                                        Подробнее
+                                    </a>
                                 </td>
                             </tr>
                         </table>
