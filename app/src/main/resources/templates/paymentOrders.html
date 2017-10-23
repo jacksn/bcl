@@ -18,6 +18,8 @@
 </head>
 
 <body>
+<link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.min.css"
+      th:href="@{/static/css/bootstrap-datetimepicker.min.css}">
 <!--/*@thymesVar id="notification" type="ru.atc.bclient.web.to.Notification"*/-->
 <th:block th:include="fragments::notification" th:if="${notification}!=null"/>
 
@@ -30,23 +32,35 @@
                 <div class="panel-body">
                     <h3>Платежные поручения</h3>
                     <hr/>
-                    <div th:if="${paymentOrderMap.size() > 1}">
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <label for="leFilter">Фильтр </label>
-                                <select class="form-control"
-                                        id="leFilter"
-                                        onchange="filterEntries('legalEntities','legalEntity', this.value)"
-                                        title="Юридические лица">
-                                    <option value="ALL">Все юридические лица</option>
-                                    <option th:each="legalEntityEntry : ${paymentOrderMap}"
-                                            th:value="${legalEntityEntry.key.id}"
-                                            th:text="${legalEntityEntry.key.shortName}">
-                                    </option>
-                                </select>
-                            </div>
+                    <form class="form-inline" method="get">
+                        <div class="form-group" th:if="${paymentOrderMap.size() > 1}">
+                            <label for="leFilter">Фильтр </label>
+                            <select class="form-control"
+                                    id="leFilter"
+                                    onchange="filterEntries('legalEntities','legalEntity', this.value)"
+                                    title="Юридические лица">
+                                <option value="ALL">Все юридические лица</option>
+                                <option th:each="legalEntityEntry : ${paymentOrderMap}"
+                                        th:value="${legalEntityEntry.key.id}"
+                                        th:text="${legalEntityEntry.key.shortName}">
+                                </option>
+                            </select>
+
                         </div>
-                    </div>
+                        <strong> С даты </strong>
+                        <div class='input-group date' id='startDatePicker'>
+                            <input type='text' class="form-control" id="startDate" name="startDate"
+                                   th:value="${startDate}"
+                                   onfocus="$('#startDatePicker').data('DateTimePicker').show()"/>
+                        </div>
+                        <strong> по дату </strong>
+                        <div class="input-group date" id='endDatePicker'>
+                            <input type='text' class="form-control" id="endDate" name="endDate"
+                                   th:value="${endDate}"
+                                   onfocus="$('#endDatePicker').data('DateTimePicker').show()"/>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Фильтровать</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -159,7 +173,7 @@
                                         <a class="btn btn-xs btn-danger" title="Отменить"
                                            th:href="@{'/payment/cancel?id=' + ${paymentOrder.id}}"
                                            th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).NEW ||
-                                       paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).ACCEPTED}">
+                                                    paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).ACCEPTED}">
                                             Отменить
                                         </a>
                                     </td>
@@ -173,5 +187,30 @@
     </div>
 </div>
 <th:block th:include="fragments::footer"/>
+<script type="text/javascript" src="../static/js/moment.min.js"
+        th:src="@{/static/js/moment.min.js}"></script>
+<script type="text/javascript" src="../static/js/moment.ru.js"
+        th:src="@{/static/js/moment.ru.js}"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker.min.js"
+        th:src="@{/static/js/bootstrap-datetimepicker.min.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#startDatePicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            showTodayButton: true
+        });
+        $('#endDatePicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            showTodayButton: true,
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#startDatePicker").on("dp.change", function (e) {
+            $('#endDatePicker').data("DateTimePicker").minDate(e.date);
+        });
+        $("#endDatePicker").on("dp.change", function (e) {
+            $('#startDatePicker').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
 </body>
 </html>

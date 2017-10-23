@@ -7,6 +7,7 @@ import ru.atc.bclient.model.entity.PaymentOrder;
 import ru.atc.bclient.model.repository.PaymentOrderRepository;
 import ru.atc.bclient.service.PaymentOrderService;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,7 +17,6 @@ import java.util.Set;
 
 @Service
 public class PaymentOrderServiceImpl implements PaymentOrderService {
-
     private PaymentOrderRepository paymentOrderRepository;
 
     public PaymentOrderServiceImpl(PaymentOrderRepository paymentOrderRepository) {
@@ -24,12 +24,10 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     }
 
     @Override
-    public List<PaymentOrder> getAllBySenders(Collection<LegalEntity> senders) {
-        return paymentOrderRepository.getAllBySenderIn(senders);
-    }
-
-    @Override
-    public Map<LegalEntity, Map<Account, List<PaymentOrder>>> getAllBySendersGroupByLegalEntityAndAccount(Collection<LegalEntity> senders) {
+    public Map<LegalEntity, Map<Account, List<PaymentOrder>>> getAllBySendersGroupByLegalEntityAndAccount(
+            LocalDate startDate,
+            LocalDate endDate,
+            Collection<LegalEntity> senders) {
         Map<LegalEntity, Map<Account, List<PaymentOrder>>> groupedPaymentOrders = new HashMap<>();
         for (LegalEntity sender : senders) {
             Map<Account, List<PaymentOrder>> accountMap = new HashMap<>();
@@ -38,7 +36,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
             }
             groupedPaymentOrders.put(sender, accountMap);
         }
-        for (PaymentOrder paymentOrder : getAllBySenders(senders)) {
+        for (PaymentOrder paymentOrder : paymentOrderRepository.getAllByDateBetweenAndSenderIn(startDate, endDate, senders)) {
             groupedPaymentOrders.get(paymentOrder.getSender()).get(paymentOrder.getSenderAccount()).add(paymentOrder);
         }
         return groupedPaymentOrders;
