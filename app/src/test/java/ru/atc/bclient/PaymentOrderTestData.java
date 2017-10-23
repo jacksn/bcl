@@ -53,7 +53,7 @@ public final class PaymentOrderTestData {
     public static final List<PaymentOrder> PAYMENT_ORDERS = Arrays.asList(PAYMENT_ORDER_1, PAYMENT_ORDER_2,
             PAYMENT_ORDER_3, PAYMENT_ORDER_4, PAYMENT_ORDER_5);
 
-    public static final List<PaymentOrder> PAYMENT_ORDERS_USER_1 = Arrays.asList(PAYMENT_ORDER_3, PAYMENT_ORDER_1);
+    public static final List<PaymentOrder> PAYMENT_ORDERS_USER_1 = Arrays.asList(PAYMENT_ORDER_1, PAYMENT_ORDER_3);
 
     private PaymentOrderTestData() {
     }
