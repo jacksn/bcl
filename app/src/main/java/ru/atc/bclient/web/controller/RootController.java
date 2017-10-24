@@ -9,14 +9,15 @@ import ru.atc.bclient.web.security.AuthorizedUser;
 import ru.atc.bclient.web.to.Notification;
 import ru.atc.bclient.web.to.NotificationType;
 
+import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_LEGAL_ENTITIES;
+import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_NOTIFICATION;
+
 @Controller
 @RequestMapping("/")
 public class RootController {
-    public static final String NOTIFICATION = "notification";
-
     @GetMapping
     public String root(Model model, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        model.addAttribute("legalEntities", authorizedUser.getLegalEntities());
+        model.addAttribute(ATTRIBUTE_LEGAL_ENTITIES, authorizedUser.getLegalEntities());
         return "userLegalEntities";
     }
 
@@ -27,7 +28,7 @@ public class RootController {
 
     @RequestMapping("login-error")
     public String loginError(Model model) {
-        model.addAttribute(NOTIFICATION,
+        model.addAttribute(ATTRIBUTE_NOTIFICATION,
                 new Notification(NotificationType.ERROR, "Ошибка входа. Неправильные имя или пароль."));
         return "login";
     }

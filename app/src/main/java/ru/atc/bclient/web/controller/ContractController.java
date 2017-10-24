@@ -19,18 +19,17 @@ import ru.atc.bclient.web.security.AuthorizedUser;
 import ru.atc.bclient.web.to.Notification;
 import ru.atc.bclient.web.to.NotificationType;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_CONTRACT;
+import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_LEGAL_ENTITIES;
+import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_NOTIFICATION;
+
 @Controller
 @RequestMapping("/contract")
 public class ContractController {
-    public static final String ATTRIBUTE_LEGAL_ENTITIES = "legalEntities";
-    public static final String ATTRIBUTE_CONTRACT = "contract";
-    public static final String ATTRIBUTE_NOTIFICATION = "notification";
-
     private ContractService contractService;
     private LegalEntityService legalEntityService;
 
@@ -47,38 +46,36 @@ public class ContractController {
     }
 
     @PostMapping
-    public String createContract(Model model, HttpSession session, RedirectAttributes redirectAttributes,
+    public String createContract(Model model, RedirectAttributes redirectAttributes,
                                  @RequestParam Integer issuerId,
                                  @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        Contract contract = (Contract) session.getAttribute(ATTRIBUTE_CONTRACT);
-        if (contract == null) {
-            contract = new Contract();
-            LegalEntity legalEntity = legalEntityService.getById(issuerId);
-            if (legalEntity == null || !authorizedUser.getLegalEntities().contains(legalEntity)) {
-                redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION, new Notification(NotificationType.ERROR, "Ошибка создания договора"));
-                return "redirect:/contract";
-            }
-            contract.setIssuer(legalEntity);
-            contract.setOpenDate(LocalDate.now());
-            contract.setCloseDate(LocalDate.now().plus(1, ChronoUnit.YEARS).minus(1, ChronoUnit.DAYS));
-            session.setAttribute(ATTRIBUTE_CONTRACT, contract);
+        Contract contract = new Contract();
+        LegalEntity legalEntity = legalEntityService.getById(issuerId);
+        if (legalEntity == null || !authorizedUser.getLegalEntities().contains(legalEntity)) {
+            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+                    new Notification(NotificationType.ERROR, "Ошибка создания договора"));
+            return "redirect:/contract";
         }
+        contract.setIssuer(legalEntity);
+        contract.setOpenDate(LocalDate.now());
+        contract.setCloseDate(LocalDate.now()
+                .plus(1, ChronoUnit.YEARS)
+                .minus(1, ChronoUnit.DAYS));
         model.addAttribute(ATTRIBUTE_CONTRACT, contract);
         model.addAttribute(ATTRIBUTE_LEGAL_ENTITIES, legalEntityService.getAll());
         return "contractEdit";
     }
 
-    @PostMapping("/save")
-    public String saveContract(Model model,
-                               @Valid @ModelAttribute Contract contract,
-                               RedirectAttributes redirectAttributes,
-                               BindingResult result) {
+    @PostMapping("save")
+    public String saveContract(Model model, RedirectAttributes redirectAttributes,
+                               @Valid @ModelAttribute Contract contract, BindingResult result) {
         if (result.hasErrors()) {
-            StringBuilder message = new StringBuilder();
+            StringBuilder message = new StringBuilder()
+                    .append("<strong>При сохранении договора произошли следующие ошибки:</strong><hr/>");
             for (FieldError error : result.getFieldErrors()) {
-                message.append("Поле ")
+                message.append("<strong>Поле ")
                         .append(error.getField())
-                        .append(" ")
+                        .append(":</strong> ")
                         .append(error.getDefaultMessage())
                         .append(".<br/>");
             }
@@ -88,13 +85,8 @@ public class ContractController {
             return "contractEdit";
         }
         contractService.save(contract);
-        redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION, new Notification(NotificationType.SUCCESS, "Договор успешно создан."));
-        return "redirect:/contract";
-    }
-
-    @GetMapping("/cancel")
-    public String cancel(HttpSession session) {
-        session.removeAttribute(ATTRIBUTE_CONTRACT);
+        redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+                new Notification(NotificationType.SUCCESS, "Договор успешно создан."));
         return "redirect:/contract";
     }
 }

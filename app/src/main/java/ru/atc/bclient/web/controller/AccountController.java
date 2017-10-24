@@ -15,9 +15,13 @@ import ru.atc.bclient.web.to.NotificationType;
 
 import java.util.Set;
 
+import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_NOTIFICATION;
+
 @Controller
 @RequestMapping("/account")
 public class AccountController {
+    private static final String ATTRIBUTE_ACCOUNT = "account";
+    private static final String ATTRIBUTE_BALANCE = "balance";
 
     private AccountService accountService;
 
@@ -26,20 +30,18 @@ public class AccountController {
     }
 
     @GetMapping
-    public String viewAccountDetails(Model model,
-                                     RedirectAttributes redirectAttributes,
-                                     @RequestParam("id") int accountId,
-                                     @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+    public String viewAccountDetails(Model model, RedirectAttributes redirectAttributes,
+                                     @RequestParam("id") int accountId, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         Set<Account> userAccounts = authorizedUser.getAccounts();
 
         Account account = accountService.getById(accountId);
         if (account == null || !userAccounts.contains(account)) {
-            redirectAttributes.addFlashAttribute("notification",
+            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка: счет не найден."));
             return "redirect:/";
         }
-        model.addAttribute("account", account);
-        model.addAttribute("balance", accountService.getBalance(accountId));
+        model.addAttribute(ATTRIBUTE_ACCOUNT, account);
+        model.addAttribute(ATTRIBUTE_BALANCE, accountService.getBalance(accountId));
         return "accountDetails";
     }
 }
