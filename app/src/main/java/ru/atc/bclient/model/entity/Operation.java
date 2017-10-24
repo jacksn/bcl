@@ -40,8 +40,8 @@ public class Operation extends BaseEntity {
     private BigDecimal amount;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "debet_account_id", referencedColumnName = "account_id")
-    private Account debetAccount;
+    @JoinColumn(name = "debit_account_id", referencedColumnName = "account_id")
+    private Account debitAccount;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "credit_account_id", referencedColumnName = "account_id")
@@ -51,8 +51,8 @@ public class Operation extends BaseEntity {
     @Size(max = 300)
     private String description;
 
-    public Operation(Integer id, LocalDate date, BigDecimal amount, Account debetAccount, Account creditAccount, String description) {
-        this(date, amount, debetAccount, creditAccount, description);
+    public Operation(Integer id, LocalDate date, BigDecimal amount, Account debitAccount, Account creditAccount, String description) {
+        this(date, amount, debitAccount, creditAccount, description);
         setId(id);
     }
 }

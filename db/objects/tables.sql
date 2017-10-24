@@ -224,11 +224,11 @@ CREATE TABLE bclient.fct_operation (
   operation_id      INT4           NOT NULL DEFAULT nextval('bclient.seq_operation_id' :: REGCLASS),
   operation_date    DATE           NOT NULL,
   operation_amt     NUMERIC(10, 2) NOT NULL,
-  debet_account_id  INT4           NOT NULL,
+  debit_account_id  INT4           NOT NULL,
   credit_account_id INT4           NOT NULL,
   operation_descr   VARCHAR(300),
   CONSTRAINT pk_operation PRIMARY KEY (operation_id),
-  CONSTRAINT fk_operation_to_debet_acc FOREIGN KEY (debet_account_id) REFERENCES bclient.dim_account (account_id),
+  CONSTRAINT fk_operation_to_debit_acc FOREIGN KEY (debit_account_id) REFERENCES bclient.dim_account (account_id),
   CONSTRAINT fk_operation_to_credit_acc FOREIGN KEY (credit_account_id) REFERENCES bclient.dim_account (account_id)
 )
 WITH (
@@ -239,8 +239,8 @@ COMMENT ON TABLE bclient.fct_operation IS 'Финансовые операции
 ALTER SEQUENCE bclient.seq_operation_id
 OWNED BY bclient.fct_operation.operation_id;
 
-CREATE INDEX ix_operation_debet_acc
-  ON bclient.fct_operation (debet_account_id);
+CREATE INDEX ix_operation_debit_acc
+  ON bclient.fct_operation (debit_account_id);
 
 CREATE INDEX ix_operation_credit_acc
   ON bclient.fct_operation (credit_account_id);

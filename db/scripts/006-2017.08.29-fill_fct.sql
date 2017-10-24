@@ -37,15 +37,15 @@ insert into bclient.fct_payment_order (payment_order_num, payment_order_date,
   currency_code, payment_order_amt, payment_reason, payment_priority_code, payment_order_status_id)
 values (100, date'2017-08-09', 3, 5, 4, 7, 9, '643', 700, 'Оплата поставки товара', '05', 5);
 
-insert into bclient.fct_operation (operation_date, operation_amt, debet_account_id, credit_account_id, operation_descr)
+insert into bclient.fct_operation (operation_date, operation_amt, debit_account_id, credit_account_id, operation_descr)
 values (date'2017-08-07', 1200, 1, 5, 'Оплата услуги Холодное водостабжение за июль 2017. ПП № 1000');
-insert into bclient.fct_operation (operation_date, operation_amt, debet_account_id, credit_account_id, operation_descr)
+insert into bclient.fct_operation (operation_date, operation_amt, debit_account_id, credit_account_id, operation_descr)
 values (date'2017-08-07', 800, 3, 5, 'Оплата услуги Холодное водостабжение за июль 2017. ПП № 200');
-insert into bclient.fct_operation (operation_date, operation_amt, debet_account_id, credit_account_id, operation_descr)
+insert into bclient.fct_operation (operation_date, operation_amt, debit_account_id, credit_account_id, operation_descr)
 values (date'2017-08-09', 2000, 1, 3, 'Оплата услуги Теплоснабжение за июль 2017. ПП № 1001');
-insert into bclient.fct_operation (operation_date, operation_amt, debet_account_id, credit_account_id, operation_descr)
+insert into bclient.fct_operation (operation_date, operation_amt, debit_account_id, credit_account_id, operation_descr)
 values (date'2017-08-09', 1500, 7, 1, 'Оплата поставки товара. ПП № 400');
-insert into bclient.fct_operation (operation_date, operation_amt, debet_account_id, credit_account_id, operation_descr)
+insert into bclient.fct_operation (operation_date, operation_amt, debit_account_id, credit_account_id, operation_descr)
 values (date'2017-08-09', 700, 5, 7, 'Оплата поставки товара. ПП № 100');
 
 insert into bclient.fct_account_balance (account_balance_date, account_balance_amt, account_id) values (date'2017-08-07', 48800, 1);
