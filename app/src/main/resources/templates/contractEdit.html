@@ -55,8 +55,7 @@
                             <div class="col-sm-9">
                                 <input type="hidden" id="issuerId"
                                        th:field="*{issuer.id}">
-                                <input type="text" readonly="readonly" class="form-control" id="issuer"
-                                       th:field="*{issuer.fullName}">
+                                <div class="form-control" id="issuer" th:text="*{issuer.fullName}"></div>
                             </div>
                         </div>
                         <div class="form-group">
