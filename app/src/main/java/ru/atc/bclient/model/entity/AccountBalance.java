@@ -27,7 +27,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "fct_account_balance")
 @AttributeOverride(name = "id", column = @Column(name = "account_balance_id"))
-@SequenceGenerator(name = "default_gen", sequenceName = "seq_account_balance_id")
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_account_balance_id", allocationSize = 1)
 public class AccountBalance extends BaseEntity {
     @Column(name = "account_balance_date", columnDefinition = "DATE")
     @NotNull

@@ -25,7 +25,7 @@ import java.util.Set;
 @Entity
 @Table(name = "dim_legal_entity")
 @AttributeOverride(name = "id", column = @Column(name = "legal_entity_id"))
-@SequenceGenerator(name = "default_gen", sequenceName = "seq_legal_entity_id")
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_legal_entity_id", allocationSize = 1)
 public class LegalEntity extends BaseEntity {
     @NonNull
     @Column(name = "legal_entity_short_name")

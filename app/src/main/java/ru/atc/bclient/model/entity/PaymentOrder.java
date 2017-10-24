@@ -28,7 +28,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "fct_payment_order")
 @AttributeOverride(name = "id", column = @Column(name = "payment_order_id"))
-@SequenceGenerator(name = "default_gen", sequenceName = "seq_payment_order_id")
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_payment_order_id", allocationSize = 1)
 public class PaymentOrder extends BaseEntity {
     @Column(name = "payment_order_num")
     @NotNull

@@ -28,7 +28,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "dim_contract")
 @AttributeOverride(name = "id", column = @Column(name = "contract_id"))
-@SequenceGenerator(name = "default_gen", sequenceName = "seq_contract_id")
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_contract_id", allocationSize = 1)
 public class Contract extends BaseEntity {
     @Column(name = "contract_name")
     @NotNull

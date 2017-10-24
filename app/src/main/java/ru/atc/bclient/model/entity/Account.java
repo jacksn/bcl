@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "dim_account")
 @AttributeOverride(name = "id", column = @Column(name = "account_id"))
-@SequenceGenerator(name = "default_gen", sequenceName = "seq_account_id")
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_account_id", allocationSize = 1)
 public class Account extends BaseEntity {
     @NonNull
     @Column(name = "account_name")

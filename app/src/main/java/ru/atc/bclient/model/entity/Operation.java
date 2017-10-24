@@ -28,7 +28,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "fct_operation")
 @AttributeOverride(name = "id", column = @Column(name = "operation_id"))
-@SequenceGenerator(name = "default_gen", sequenceName = "seq_operation_id")
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_operation_id", allocationSize = 1)
 public class Operation extends BaseEntity {
     @Column(name = "operation_date", columnDefinition = "DATE")
     @NotNull

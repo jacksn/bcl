@@ -7,7 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -20,7 +28,7 @@ import java.util.Set;
 @Entity
 @Table(name = "dim_user")
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-@SequenceGenerator(name = "default_gen", sequenceName = "seq_user_id")
+@SequenceGenerator(name = "default_gen", sequenceName = "seq_user_id", allocationSize = 1)
 public class User extends BaseEntity {
     @NonNull
     @Column(name = "user_login")
