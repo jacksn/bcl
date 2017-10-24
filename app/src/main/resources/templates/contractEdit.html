@@ -37,30 +37,30 @@
                           th:action="@{/contract/save}"
                           th:object="${contract}">
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Наименование</label>
-                            <div class="col-sm-9">
+                            <label for="name" class="col-sm-3 control-label">Наименование</label>
+                            <div class="col-sm-7">
                                 <input type="text" maxlength="100" class="form-control" id="name"
                                        th:field="*{name}">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="number" class="col-sm-2 control-label">Номер</label>
-                            <div class="col-sm-9">
-                                <input type="text" maxlength="100" class="form-control" id="number"
+                            <label for="number" class="col-sm-3 control-label">Номер</label>
+                            <div class="col-sm-3">
+                                <input type="text" maxlength="20" class="form-control" id="number"
                                        th:field="*{number}">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="issuer" class="col-sm-2 control-label">Эмитент</label>
-                            <div class="col-sm-9">
+                            <label for="issuer" class="col-sm-3 control-label">Эмитент</label>
+                            <div class="col-sm-7">
                                 <input type="hidden" id="issuerId"
                                        th:field="*{issuer.id}">
                                 <div class="form-control" id="issuer" th:text="*{issuer.fullName}"></div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="signerId" class="col-sm-2 control-label">Подписант</label>
-                            <div class="col-sm-9">
+                            <label for="signerId" class="col-sm-3 control-label">Подписант</label>
+                            <div class="col-sm-7">
                                 <select class="form-control" id="signerId" th:field="*{signer.id}">
                                     <th:block th:each="legalEntity : ${legalEntities}">
                                         <option th:if="${legalEntity.id} != *{issuer.id}"
@@ -72,7 +72,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-2 control-label"><strong>Дата подписания</strong></div>
+                            <div class="col-sm-3 control-label"><strong>Дата подписания</strong></div>
                             <div class="col-sm-2">
                                 <input type="text" class="input-group form-control" id="openDatePicker"
                                        th:field="*{openDate}"
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-2 control-label"><strong>Дата окончания</strong></div>
+                            <div class="col-sm-3 control-label"><strong>Дата окончания</strong></div>
                             <div class="col-sm-2">
                                 <input type="text" class="input-group form-control" id="closeDatePicker"
                                        th:field="*{closeDate}"
@@ -88,13 +88,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="currencyCode" class="col-sm-2 control-label">Код валюты</label>
-                            <div class="col-sm-9">
+                            <label for="currencyCode" class="col-sm-3 control-label">Код валюты</label>
+                            <div class="col-sm-2">
                                 <input type="text" maxlength="10" class="form-control" id="currencyCode"
                                        th:field="*{currencyCode}">
                             </div>
                         </div>
-                        <div class="col-sm-offset-2 col-sm-9">
+                        <div class="col-sm-offset-3 col-sm-7">
                             <button type="submit" class="btn btn-primary">Сохранить</button>
                             <a class="btn btn-danger" href="/contract" th:href="@{/contract}">Отмена</a>
                         </div>
