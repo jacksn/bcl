@@ -59,7 +59,7 @@ public class PaymentOrderController {
 
     @GetMapping("view")
     public String viewPaymentOrder(Model model, RedirectAttributes redirectAttributes,
-                                   @RequestParam() int id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+                                   @RequestParam Integer id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         PaymentOrder paymentOrder = paymentOrderService.getBySendersAndId(authorizedUser.getLegalEntities(), id);
         if (paymentOrder == null) {
             redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,

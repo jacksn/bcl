@@ -43,7 +43,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     }
 
     @Override
-    public PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, int id) {
+    public PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, Integer id) {
         return paymentOrderRepository.getBySenderInAndId(legalEntities, id);
     }
 }

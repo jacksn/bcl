@@ -16,5 +16,5 @@ public interface PaymentOrderService {
             LocalDate endDate,
             Collection<LegalEntity> senders);
 
-    PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, int id);
+    PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, Integer id);
 }

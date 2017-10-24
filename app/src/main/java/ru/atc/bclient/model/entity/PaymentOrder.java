@@ -32,7 +32,7 @@ import java.time.LocalDate;
 public class PaymentOrder extends BaseEntity {
     @Column(name = "payment_order_num")
     @NotNull
-    private int number;
+    private Integer number;
 
     @Column(name = "payment_order_date", columnDefinition = "DATE")
     @NotNull
@@ -84,7 +84,7 @@ public class PaymentOrder extends BaseEntity {
     @Size(max = 500)
     private String rejectReason;
 
-    public PaymentOrder(Integer id, int number, LocalDate date,
+    public PaymentOrder(Integer id, Integer number, LocalDate date,
                         LegalEntity sender, Account senderAccount,
                         LegalEntity recipient, Account recipientAccount,
                         Contract contract, String currencyCode, BigDecimal amount,

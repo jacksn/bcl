@@ -31,7 +31,7 @@ public class AccountController {
 
     @GetMapping
     public String viewAccountDetails(Model model, RedirectAttributes redirectAttributes,
-                                     @RequestParam("id") int accountId, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+                                     @RequestParam("id") Integer accountId, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         Set<Account> userAccounts = authorizedUser.getAccounts();
 
         Account account = accountService.getById(accountId);

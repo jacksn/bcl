@@ -16,11 +16,11 @@ public class AccountServiceImpl implements ru.atc.bclient.service.AccountService
         this.accountRepository = accountRepository;
     }
 
-    public AccountBalance getBalance(int accountId) {
+    public AccountBalance getBalance(Integer accountId) {
         return accountBalanceRepository.getFirstByAccountIdOrderByDateDesc(accountId);
     }
 
-    public Account getById(int accountId) {
+    public Account getById(Integer accountId) {
         return accountRepository.findOne(accountId);
     }
 }

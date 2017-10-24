@@ -8,5 +8,5 @@ import ru.atc.bclient.model.entity.AccountBalance;
 @Transactional
 @Repository
 public interface AccountBalanceRepository extends JpaRepository<AccountBalance, Integer> {
-    AccountBalance getFirstByAccountIdOrderByDateDesc(int accountId);
+    AccountBalance getFirstByAccountIdOrderByDateDesc(Integer accountId);
 }

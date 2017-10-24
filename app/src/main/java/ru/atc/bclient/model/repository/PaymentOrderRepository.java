@@ -20,5 +20,5 @@ public interface PaymentOrderRepository extends JpaRepository<PaymentOrder, Inte
             LocalDate endDate,
             Collection<LegalEntity> legalEntities);
 
-    PaymentOrder getBySenderInAndId(Collection<LegalEntity> legalEntities, int id);
+    PaymentOrder getBySenderInAndId(Collection<LegalEntity> legalEntities, Integer id);
 }
