@@ -36,7 +36,6 @@
                     <form class="form-horizontal" action="/contract/save" method="post"
                           th:action="@{/contract/save}"
                           th:object="${contract}">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Наименование</label>
                             <div class="col-sm-9">
