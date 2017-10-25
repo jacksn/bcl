@@ -5,7 +5,7 @@ import ru.atc.bclient.model.entity.LegalEntity;
 import java.util.List;
 
 public interface LegalEntityService {
-    LegalEntity getById(Integer legalEntityId);
+    LegalEntity get(Integer id);
 
     List<LegalEntity> getAll();
 }

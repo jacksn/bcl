@@ -50,7 +50,7 @@ public class ContractController {
                                  @RequestParam Integer issuerId,
                                  @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         Contract contract = new Contract();
-        LegalEntity legalEntity = legalEntityService.getById(issuerId);
+        LegalEntity legalEntity = legalEntityService.get(issuerId);
         if (legalEntity == null || !authorizedUser.getLegalEntities().contains(legalEntity)) {
             redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка создания договора"));

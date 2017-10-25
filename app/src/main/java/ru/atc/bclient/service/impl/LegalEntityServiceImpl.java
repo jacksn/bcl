@@ -16,8 +16,8 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     }
 
     @Override
-    public LegalEntity getById(Integer legalEntityId) {
-        return repository.findOne(legalEntityId);
+    public LegalEntity get(Integer id) {
+        return repository.findOne(id);
     }
 
     @Override
