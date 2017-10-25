@@ -1,14 +1,14 @@
 package ru.atc.bclient.web.controller.rest;
 
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.atc.bclient.model.entity.LegalEntity;
 import ru.atc.bclient.service.LegalEntityService;
-import ru.atc.bclient.web.security.AuthorizedUser;
+
+import java.util.List;
 
 import static ru.atc.bclient.web.controller.rest.ApiVersion.API_VERSION;
 import static ru.atc.bclient.web.controller.rest.LegalEntityRestController.REST_URL;
@@ -25,13 +25,12 @@ public class LegalEntityRestController {
     }
 
     @GetMapping("/{id}")
-    public LegalEntity get(@PathVariable("id") Integer id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        LegalEntity legalEntity = service.get(id);
-        if (authorizedUser.getLegalEntities().contains(legalEntity)) {
-            return legalEntity;
-        } else {
-            return null;
-        }
+    public LegalEntity get(@PathVariable("id") Integer id) {
+        return service.get(id);
     }
 
+    @GetMapping
+    public List<LegalEntity> getAll() {
+        return service.getAll();
+    }
 }
