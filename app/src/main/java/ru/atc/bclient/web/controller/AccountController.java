@@ -34,7 +34,7 @@ public class AccountController {
                                      @RequestParam("id") Integer accountId, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         Set<Account> userAccounts = authorizedUser.getAccounts();
 
-        Account account = accountService.getById(accountId);
+        Account account = accountService.get(accountId);
         if (account == null || !userAccounts.contains(account)) {
             redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка: счет не найден."));

@@ -20,7 +20,7 @@ public class AccountServiceImpl implements ru.atc.bclient.service.AccountService
         return accountBalanceRepository.getFirstByAccountIdOrderByDateDesc(accountId);
     }
 
-    public Account getById(Integer accountId) {
+    public Account get(Integer accountId) {
         return accountRepository.findOne(accountId);
     }
 }
