@@ -13,4 +13,6 @@ public interface ContractService {
     Map<LegalEntity, List<Contract>> getAllByIssuersGroupByLegalEntity(Collection<LegalEntity> issuers);
 
     Contract save(Contract contract);
+
+    Contract get(Integer id);
 }

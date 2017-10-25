@@ -41,4 +41,9 @@ public class ContractServiceImpl implements ContractService {
     public Contract save(Contract contract) {
         return repository.save(contract);
     }
+
+    @Override
+    public Contract get(Integer id) {
+        return repository.findOne(id);
+    }
 }
