@@ -18,7 +18,7 @@ public class PaymentOrderRepositoryTest extends AbstractRepositoryTest {
 
     @Test
     public void findAllByLegalEntity() {
-        List<PaymentOrder> paymentOrders = repository.getAllByDateBetweenAndSenderIn(
+        List<PaymentOrder> paymentOrders = repository.getAllByDateBetweenAndSenderInOrderByDateAscIdAsc(
                 PAYMENT_ORDER_1.getDate(),
                 PAYMENT_ORDER_3.getDate(),
                 USER_1.getLegalEntities());
