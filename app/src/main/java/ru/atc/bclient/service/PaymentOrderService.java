@@ -17,4 +17,8 @@ public interface PaymentOrderService {
             Collection<LegalEntity> senders);
 
     PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, Integer id);
+
+    Integer getNewNumber(LegalEntity legalEntity);
+
+    PaymentOrder save(PaymentOrder paymentOrder);
 }

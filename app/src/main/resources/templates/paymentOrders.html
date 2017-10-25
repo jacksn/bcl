@@ -82,7 +82,9 @@
                                         <option value="ALL">Все счета</option>
                                         <option th:each="account : ${legalEntityEntry.value}"
                                                 th:value="${account.key.id}"
-                                                th:text="${account.key.name + ' (' +  account.key.number + ')'}">
+                                                th:text="${account.key.name}
+                                                + ' (' +  ${account.key.number} + ')'
+                                                + ', код валюты ' + ${account.key.currencyCode}">
                                         </option>
                                     </select>
                                 </div>
@@ -101,10 +103,16 @@
                                     </h4>
                                 </div>
                                 <div class="col-md-4 text-right">
-                                    <a class="btn btn-success"
-                                       th:if="${accountEntry.key.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
-                                        Создать платежное поручение
-                                    </a>
+                                    <th:block
+                                            th:if="${accountEntry.key.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
+                                        <form method="post" action="/payment" th:action="@{/payment}">
+                                            <input type="hidden" name="senderId"
+                                                   th:value="${legalEntityEntry.key.id}"/>
+                                            <input type="hidden" name="senderAccountId"
+                                                   th:value="${accountEntry.key.id}"/>
+                                            <button class="btn btn-success">Создать платежное поручение</button>
+                                        </form>
+                                    </th:block>
                                     <span class="label label-warning label-md"
                                           th:if="${accountEntry.key.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
                                     Счет заблокирован
@@ -149,8 +157,10 @@
                                         <span th:text="${paymentOrder.recipientAccount.number}">Счет</span>
                                     </td>
                                     <td>
-                                        <span th:text="${paymentOrder.contract.number}">#</span> от
-                                        <span th:text="${paymentOrder.contract.openDate}">2017-01-01</span>
+                                        <div th:if="${paymentOrder.contract != null}">
+                                            <span th:text="${paymentOrder.contract.number}">#</span> от
+                                            <span th:text="${paymentOrder.contract.openDate}">2017-01-01</span>
+                                        </div>
                                     </td>
                                     <td>
                                         <span th:text="${paymentOrder.currencyCode}">123</span>
@@ -195,20 +205,23 @@
         th:src="@{/static/js/bootstrap-datetimepicker.min.js}"></script>
 <script type="text/javascript">
     $(function () {
-        $('#startDatePicker').datetimepicker({
+        var startDatePicker = $('#startDatePicker');
+
+        startDatePicker.datetimepicker({
             format: 'YYYY-MM-DD',
             showTodayButton: true
         });
-        $('#endDatePicker').datetimepicker({
+        var endDatePicker = $('#endDatePicker');
+        endDatePicker.datetimepicker({
             format: 'YYYY-MM-DD',
             showTodayButton: true,
             useCurrent: false //Important! See issue #1075
         });
-        $("#startDatePicker").on("dp.change", function (e) {
+        startDatePicker.on('dp.change', function (e) {
             $('#endDatePicker').data("DateTimePicker").minDate(e.date);
         });
-        $("#endDatePicker").on("dp.change", function (e) {
-            $('#startDatePicker').data("DateTimePicker").maxDate(e.date);
+        endDatePicker.on('dp.change', function (e) {
+            startDatePicker.data('DateTimePicker').maxDate(e.date);
         });
     });
 </script>

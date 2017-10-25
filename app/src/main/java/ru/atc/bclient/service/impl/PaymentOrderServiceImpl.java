@@ -36,7 +36,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
             }
             groupedPaymentOrders.put(sender, accountMap);
         }
-        for (PaymentOrder paymentOrder : paymentOrderRepository.getAllByDateBetweenAndSenderIn(startDate, endDate, senders)) {
+        for (PaymentOrder paymentOrder : paymentOrderRepository.getAllByDateBetweenAndSenderInOrderByDateAscIdAsc(startDate, endDate, senders)) {
             groupedPaymentOrders.get(paymentOrder.getSender()).get(paymentOrder.getSenderAccount()).add(paymentOrder);
         }
         return groupedPaymentOrders;
@@ -46,4 +46,15 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     public PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, Integer id) {
         return paymentOrderRepository.getBySenderInAndId(legalEntities, id);
     }
+
+    @Override
+    public Integer getNewNumber(LegalEntity legalEntity) {
+        return paymentOrderRepository.getLastNumber(legalEntity.getId()) + 1;
+    }
+
+    @Override
+    public PaymentOrder save(PaymentOrder paymentOrder) {
+        return paymentOrderRepository.save(paymentOrder);
+    }
+
 }

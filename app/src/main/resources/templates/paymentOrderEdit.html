@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head th:replace="fragments::headTag('Банк-клиент')">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/animate.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="../static/js/util.js"></script>
+
+</head>
+
+<body>
+<!--/*@thymesVar id="notification" type="ru.atc.bclient.web.to.Notification"*/-->
+<th:block th:include="fragments::notification" th:if="${notification}!=null"/>
+
+<th:block th:include="fragments::header('payment')"/>
+
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3>Новое платежное поручение</h3>
+                    <hr/>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" action="/contract/save" method="post"
+                          th:action="@{/payment/save}"
+                          th:object="${paymentOrderFormData}">
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label"><strong>Номер</strong></div>
+                            <div class="col-sm-2">
+                                <h5 id="name" th:text="${paymentOrder.number}"></h5>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label"><strong>Дата</strong></div>
+                            <div class="col-sm-2">
+                                <h5 id="date"
+                                     th:text="${#temporals.format(paymentOrder.date, 'yyyy-MM-dd')}">
+                                </h5>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label"><strong>Отправитель</strong></div>
+                            <div class="col-sm-7" id="senderDetails">
+                                <input type="hidden" th:value="${paymentOrder.sender.id}" id="senderId">
+                                <h5 th:text="${paymentOrder.sender.fullName}"></h5>
+                                <strong>Адрес: </strong>
+                                <span th:text="${paymentOrder.sender.address}"></span>
+                                <br/>
+                                <strong>ИНН: </strong>
+                                <span th:text="${paymentOrder.sender.inn}"></span>
+                                <br/>
+                                <strong>КПП: </strong>
+                                <span th:text="${paymentOrder.sender.kpp}"></span>
+                                <br/>
+                                <strong>ОГРН: </strong>
+                                <span th:text="${paymentOrder.sender.ogrn}"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label"><strong>Счет отправителя</strong></div>
+                            <div class="col-sm-7">
+                                <input type="hidden" th:value="${paymentOrder.senderAccount.id}" id="senderAccountId">
+                                <h5 th:text="${paymentOrder.senderAccount.name}
+                                                        + ' (' + ${paymentOrder.senderAccount.number} + ')'
+                                                        + ' в ' + ${paymentOrder.senderAccount.bank.name}
+                                                        + ', код валюты ' + ${paymentOrder.senderAccount.currencyCode}">
+                                </h5>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group">
+                            <label for="contractId" class="col-sm-3 control-label">Договор</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" id="contractId" th:field="*{contractId}"
+                                        onchange="contractChange()">
+                                    <option th:field="*{contractId}" th:value="${null}">
+                                        Договор не задан
+                                    </option>
+                                    <th:block th:each="contract : ${contracts}">
+                                        <option th:text="${contract.name}
+                                                        + ' от ' + ${contract.openDate}
+                                                        + ' с ' + ${contract.signer.fullName}
+                                                        + ', код валюты ' + ${contract.currencyCode}"
+                                                th:value="${contract.id}"
+                                                th:field="*{contractId}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group">
+                            <label for="recipientId" class="col-sm-3 control-label">Получатель</label>
+                            <div class="col-sm-7" id="recipientDetails">
+                                <select class="form-control" id="recipientId" th:field="*{recipientId}"
+                                        onchange="updateRecipientData()">
+                                </select>
+                                <strong>Адрес: </strong>
+                                <span id="recipientAddress"></span>
+                                <br/>
+                                <strong>ИНН: </strong>
+                                <span id="recipientInn"></span>
+                                <br/>
+                                <strong>КПП: </strong>
+                                <span id="recipientKpp"></span>
+                                <br/>
+                                <strong>ОГРН: </strong>
+                                <span id="recipientOgrn"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipientAccount" class="col-sm-3 control-label">Счет получателя</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" id="recipientAccount" th:field="*{recipientAccountId}">
+                                </select>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group">
+                            <label for="reason" class="col-sm-3 control-label">Назначение платежа</label>
+                            <div class="col-sm-7">
+                                <textarea maxlength="500" rows="3" class="form-control" id="reason"
+                                          th:field="*{reason}"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="priorityCode" class="col-sm-3 control-label">Код приоритета</label>
+                            <div class="col-sm-1">
+                                <select class="form-control text-center" id="priorityCode" th:field="*{priorityCode}">
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="currencyCode" class="col-sm-3 control-label">Код валюты</label>
+                            <div class="col-sm-7">
+                                <input type="hidden" id="currencyCode" th:field="${paymentOrder.senderAccount.currencyCode}">
+                                <h5 th:text="${paymentOrder.senderAccount.currencyCode}"></h5>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount" class="col-sm-3 control-label">Сумма</label>
+                            <div class="col-sm-2">
+                                <input type="number" min="0.00" step="0.01" placeholder="0,00"
+                                       class="form-control text-right" id="amount"
+                                       th:field="*{amount}">
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-3 col-sm-7">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <a class="btn btn-danger" href="/contract" th:href="@{/contract}">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="fragments::footer"/>
+<div id="loader" class="hide">
+    <div id="spinner"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    $(function () {
+        contractChange();
+    });
+</script>
+<script type="text/javascript" src="../static/js/paymentOrderUtil.js"
+        th:src="@{/static/js/paymentOrderUtil.js}"></script>
+</body>
+</html>
