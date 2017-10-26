@@ -25,7 +25,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<Contract> getAllByIssuers(Collection<LegalEntity> issuers) {
-        return repository.getAllByIssuerIn(issuers);
+        return repository.getAllByIssuerInOrderByOpenDateAsc(issuers);
     }
 
     @Override
