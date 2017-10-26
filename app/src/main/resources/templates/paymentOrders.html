@@ -211,7 +211,7 @@
                                             <form method="post" action="/payment/cancel" th:action="@{/payment/cancel}">
                                                 <input type="hidden" name="id"
                                                        th:value="${paymentOrder.id}"/>
-                                                <button class="btn btn-xs btn-danger" type="submit">
+                                                <button class="btn btn-xs btn-danger" type="submit" title="Отменить">
                                                     <span class="glyphicon glyphicon-remove"></span>
                                                 </button>
                                             </form>
