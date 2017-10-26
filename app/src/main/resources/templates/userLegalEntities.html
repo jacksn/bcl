@@ -85,16 +85,16 @@
                                 </td>
                                 <td>
                                     <span class="label label-success"
-                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
-                                        Активен
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}"
+                                          th:text="${account.status}">
                                     </span>
                                     <span class="label label-warning"
-                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
-                                        Заблокирован
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}"
+                                          th:text="${account.status}">
                                     </span>
                                     <span class="label label-default"
-                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
-                                        Закрыт
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}"
+                                          th:text="${account.status}">
                                     </span>
                                 </td>
                                 <td>
