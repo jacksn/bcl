@@ -88,12 +88,12 @@
                                           th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).ACTIVE}">
                                         Активен
                                     </span>
-                                        <span class="label label-warning"
-                                              th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
+                                    <span class="label label-warning"
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).LOCKED}">
                                         Заблокирован
                                     </span>
-                                        <span class="label label-default"
-                                              th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
+                                    <span class="label label-default"
+                                          th:if="${account.status == T(ru.atc.bclient.model.entity.AccountStatus).CLOSED}">
                                         Закрыт
                                     </span>
                                 </td>
