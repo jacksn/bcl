@@ -108,11 +108,11 @@
 
                     <h4>
                         <strong>Статус: </strong>
-                        <span class="label label-primary label-md"
+                        <span class="label label-info label-md"
                               th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).NEW}"
                               th:text="${paymentOrder.status}">
                         </span>
-                        <span class="label label-info label-md"
+                        <span class="label label-primary label-md"
                               th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).ACCEPTED}"
                               th:text="${paymentOrder.status}">
                         </span>

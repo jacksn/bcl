@@ -57,4 +57,8 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
         return paymentOrderRepository.save(paymentOrder);
     }
 
+    @Override
+    public PaymentOrder get(Integer id) {
+        return paymentOrderRepository.findOne(id);
+    }
 }

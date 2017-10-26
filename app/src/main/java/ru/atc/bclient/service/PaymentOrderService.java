@@ -21,4 +21,6 @@ public interface PaymentOrderService {
     Integer getNewNumber(LegalEntity legalEntity);
 
     PaymentOrder save(PaymentOrder paymentOrder);
+
+    PaymentOrder get(Integer id);
 }

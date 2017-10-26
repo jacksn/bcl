@@ -15,4 +15,6 @@ public interface ContractService {
     Contract save(Contract contract);
 
     Contract get(Integer id);
+
+    List<Contract> getAllActive(LegalEntity sender, String currencyCode);
 }

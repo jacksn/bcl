@@ -136,6 +136,7 @@
                                     <th>Приоритет</th>
                                     <th>Статус</th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tr th:if="${accountEntry.value.size() == 0}">
@@ -172,20 +173,49 @@
                                         <span th:text="${paymentOrder.priorityCode}">05</span>
                                     </td>
                                     <td th:title="${paymentOrder.rejectReason}">
-                                            <span class="label label-success"
-                                                  th:text="${paymentOrder.status}">Новый</span>
+                                        <span class="label label-info"
+                                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).NEW}">
+                                            Новое
+                                        </span>
+                                        <span class="label label-primary"
+                                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).ACCEPTED}">
+                                            Принято
+                                        </span>
+                                        <span class="label label-default"
+                                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).CANCELLED}">
+                                            Отменено
+                                        </span>
+                                        <span class="label label-warning"
+                                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).IN_PROGRESS}">
+                                            Обработка
+                                        </span>
+                                        <span class="label label-success"
+                                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).EXECUTED}">
+                                            Исполнено
+                                        </span>
+                                        <span class="label label-danger"
+                                              th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).REJECTED}">
+                                            Отклонено
+                                        </span>
                                     </td>
                                     <td>
                                         <a class="btn btn-xs btn-info" title="Просмотреть"
                                            th:href="@{'/payment/view?id=' + ${paymentOrder.id}}">
-                                            Просмотреть
+                                            <span class="glyphicon glyphicon-search"></span>
                                         </a>
-                                        <a class="btn btn-xs btn-danger" title="Отменить"
-                                           th:href="@{'/payment/cancel?id=' + ${paymentOrder.id}}"
-                                           th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).NEW ||
+                                    </td>
+                                    <td>
+                                        <th:block
+                                                th:if="${paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).NEW ||
                                                     paymentOrder.status == T(ru.atc.bclient.model.entity.PaymentOrderStatus).ACCEPTED}">
-                                            Отменить
-                                        </a>
+                                            <form method="post" action="/payment/cancel" th:action="@{/payment/cancel}">
+                                                <input type="hidden" name="id"
+                                                       th:value="${paymentOrder.id}"/>
+                                                <button class="btn btn-xs btn-danger" type="submit">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
+                                            </form>
+                                        </th:block>
                                     </td>
                                 </tr>
                             </table>
