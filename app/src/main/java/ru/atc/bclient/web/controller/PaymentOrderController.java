@@ -323,4 +323,10 @@ public class PaymentOrderController {
         session.removeAttribute(ATTRIBUTE_PAYMENT_ORDER);
         return "redirect:/payment";
     }
+
+    @GetMapping("process")
+    public String process() {
+        paymentOrderProcessor.process();
+        return "redirect:/payment";
+    }
 }
