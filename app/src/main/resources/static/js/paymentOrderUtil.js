@@ -1,6 +1,6 @@
-var ajaxUrl = "api/v1";
-var legalEntitiesUrl = "/legalEntity";
-var contractsUrl = "/contract";
+var ajaxUrl = "ajax";
+var legalEntitiesUrl = "/legalEntities";
+var contractsUrl = "/contracts";
 
 function contractChange() {
     var contractId = $('#contractId').val();
