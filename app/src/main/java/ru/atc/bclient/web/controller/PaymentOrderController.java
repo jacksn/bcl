@@ -22,6 +22,7 @@ import ru.atc.bclient.model.entity.PaymentOrderStatus;
 import ru.atc.bclient.service.AccountService;
 import ru.atc.bclient.service.ContractService;
 import ru.atc.bclient.service.LegalEntityService;
+import ru.atc.bclient.service.PaymentOrderProcessor;
 import ru.atc.bclient.service.PaymentOrderService;
 import ru.atc.bclient.web.security.AuthorizedUser;
 import ru.atc.bclient.web.to.Notification;
@@ -41,26 +42,34 @@ public class PaymentOrderController {
     private static final String ATTRIBUTE_PAYMENT_ORDER_MAP = "paymentOrderMap";
     private static final String MESSAGE_ERROR_CREATING_PAYMENT_ORDER = "Ошибка создания платежного поручения!<br/>";
     private static final String MESSAGE_ERROR_CANCELLING_PAYMENT_ORDER = "Ошибка отмены платежного поручения!<br/>";
+    private static final String MESSAGE_PROCESSING_IN_PROGRESS = "Происходит обработка платежный поручений. Попробуйте снова через несколько минут";
+    private static final String MESSAGE_DENIED_OPERATION = " платежных поручений временно невозможно.<br/>";
+    private static final String MESSAGE_OPERATION_CREATE = "Создание";
+    private static final String MESSAGE_OPERATION_SAVE = "Сохранение";
+    private static final String MESSAGE_OPERATION_UPDATE = "Изменение";
 
     private PaymentOrderService paymentOrderService;
     private LegalEntityService legalEntityService;
     private AccountService accountService;
     private ContractService contractService;
+    private PaymentOrderProcessor paymentOrderProcessor;
 
-    public PaymentOrderController(PaymentOrderService paymentOrderService, LegalEntityService legalEntityService, AccountService accountService, ContractService contractService) {
-        this.paymentOrderService = paymentOrderService;
-        this.legalEntityService = legalEntityService;
-        this.accountService = accountService;
-        this.contractService = contractService;
+    public PaymentOrderController(PaymentOrderService pos, LegalEntityService les, AccountService as, ContractService cs,
+                                  PaymentOrderProcessor processor) {
+        this.paymentOrderService = pos;
+        this.legalEntityService = les;
+        this.accountService = as;
+        this.contractService = cs;
+        this.paymentOrderProcessor = processor;
     }
 
     @GetMapping
     public String getAll(Model model,
-                                   @RequestParam(value = ATTRIBUTE_START_DATE, required = false)
-                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate starDate,
-                                   @RequestParam(value = ATTRIBUTE_END_DATE, required = false)
-                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                   @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+                         @RequestParam(value = ATTRIBUTE_START_DATE, required = false)
+                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate starDate,
+                         @RequestParam(value = ATTRIBUTE_END_DATE, required = false)
+                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                         @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         LocalDate currentDate = LocalDate.now();
         if (starDate == null && endDate == null) {
             starDate = currentDate;
@@ -81,7 +90,7 @@ public class PaymentOrderController {
 
     @GetMapping("view")
     public String view(Model model, RedirectAttributes redirectAttributes,
-                                   @RequestParam Integer id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+                       @RequestParam Integer id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         PaymentOrder paymentOrder = paymentOrderService.getBySendersAndId(authorizedUser.getLegalEntities(), id);
         if (paymentOrder == null) {
             redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
@@ -94,9 +103,17 @@ public class PaymentOrderController {
 
     @PostMapping
     public String create(Model model, RedirectAttributes redirectAttributes,
-                                     HttpSession session,
-                                     @RequestParam Integer senderId, @RequestParam Integer senderAccountId,
-                                     @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+                         HttpSession session,
+                         @RequestParam Integer senderId, @RequestParam Integer senderAccountId,
+                         @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+
+        if (paymentOrderProcessor.isProcessingInProgress()) {
+            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+                    new Notification(NotificationType.WARNING,
+                            MESSAGE_OPERATION_CREATE + MESSAGE_DENIED_OPERATION + MESSAGE_PROCESSING_IN_PROGRESS));
+            return "redirect:/payment";
+        }
+
         PaymentOrder paymentOrder = new PaymentOrder();
         LegalEntity sender = legalEntityService.get(senderId);
         Account senderAccount = accountService.get(senderAccountId);
@@ -136,9 +153,8 @@ public class PaymentOrderController {
     }
 
     @PostMapping("save")
-    public String save(Model model, RedirectAttributes redirectAttributes,
-                                   HttpSession session,
-                                   @Valid @ModelAttribute PaymentOrderFormData paymentOrderFormData, BindingResult result) {
+    public String save(Model model, RedirectAttributes redirectAttributes, HttpSession session,
+                       @Valid @ModelAttribute PaymentOrderFormData paymentOrderFormData, BindingResult result) {
 
         StringBuilder errorMessage = new StringBuilder();
 
@@ -159,6 +175,17 @@ public class PaymentOrderController {
         }
 
         assert paymentOrder != null;
+
+        if (paymentOrderProcessor.isProcessingInProgress()) {
+            model.addAttribute(ATTRIBUTE_NOTIFICATION,
+                    new Notification(NotificationType.WARNING,
+                            MESSAGE_OPERATION_SAVE + MESSAGE_DENIED_OPERATION + MESSAGE_PROCESSING_IN_PROGRESS));
+            model.addAttribute(ATTRIBUTE_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
+                    paymentOrder.getSenderAccount().getCurrencyCode()));
+            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
+            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_TO, paymentOrderFormData);
+            return "paymentOrderEdit";
+        }
 
         Integer recipientId = paymentOrderFormData.getRecipientId();
         Account recipientAccount = null;
@@ -266,16 +293,17 @@ public class PaymentOrderController {
     }
 
     @PostMapping("cancel")
-    public String cancel(@RequestParam Integer id,
-                              RedirectAttributes redirectAttributes,
-                              @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+    public String cancel(@RequestParam Integer id, RedirectAttributes redirectAttributes,
+                         @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         Notification notification;
         PaymentOrder paymentOrder = paymentOrderService.get(id);
-        if (paymentOrder == null
-                || !authorizedUser.getLegalEntities().contains(paymentOrder.getSender())) {
+        if (paymentOrder == null || !authorizedUser.getLegalEntities().contains(paymentOrder.getSender())) {
             notification = new Notification(NotificationType.ERROR, "Платежное поручение не найдено.");
         } else if (!(paymentOrder.getStatus().equals(PaymentOrderStatus.NEW) || paymentOrder.getStatus().equals(PaymentOrderStatus.ACCEPTED))) {
             notification = new Notification(NotificationType.ERROR, "Отмена платежного поручения запрещена.");
+        } else if (paymentOrderProcessor.isProcessingInProgress()) {
+            notification = new Notification(NotificationType.WARNING,
+                    MESSAGE_OPERATION_UPDATE + MESSAGE_DENIED_OPERATION + MESSAGE_PROCESSING_IN_PROGRESS);
         } else {
             try {
                 paymentOrder.setStatus(PaymentOrderStatus.CANCELLED);

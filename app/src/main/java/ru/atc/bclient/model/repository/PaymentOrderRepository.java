@@ -15,6 +15,8 @@ public interface PaymentOrderRepository extends JpaRepository<PaymentOrder, Inte
             LocalDate endDate,
             Collection<LegalEntity> legalEntities);
 
+    List<PaymentOrder> getAllByDateBetweenOrderByPriorityCodeAscDateAscIdAsc(LocalDate startDate, LocalDate endDate);
+
     PaymentOrder getBySenderInAndId(Collection<LegalEntity> legalEntities, Integer id);
 
     @Query(value = "SELECT payment_order_num " +
