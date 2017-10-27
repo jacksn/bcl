@@ -1,17 +1,17 @@
 package ru.atc.bclient.web.controller;
 
 public final class ControllerStringConstants {
-    static final String ATTRIBUTE_NOTIFICATION = "notification";
-    static final String ATTRIBUTE_LEGAL_ENTITIES = "legalEntities";
-    static final String ATTRIBUTE_CONTRACT = "contract";
-    static final String ATTRIBUTE_CONTRACTS = "contracts";
-    static final String ATTRIBUTE_PAYMENT_ORDER = "paymentOrder";
-    static final String ATTRIBUTE_PAYMENT_ORDER_FORM_DATA = "paymentOrderFormData";
-    static final String ATTRIBUTE_START_DATE = "startDate";
-    static final String ATTRIBUTE_END_DATE = "endDate";
-    static final String ATTRIBUTE_ACCOUNT = "account";
-    static final String ATTRIBUTE_BALANCE = "balance";
-    static final String ATTRIBUTE_PAYMENT_ORDERS = "paymentOrders";
+    static final String ATTR_NOTIFICATION = "notification";
+    static final String ATTR_LEGAL_ENTITIES = "legalEntities";
+    static final String ATTR_CONTRACT = "contract";
+    static final String ATTR_CONTRACTS = "contracts";
+    static final String ATTR_PAYMENT_ORDER = "paymentOrder";
+    static final String ATTR_PAYMENT_ORDERS = "paymentOrders";
+    static final String ATTR_PAYMENT_ORDER_FORM_DATA = "paymentOrderFormData";
+    static final String ATTR_DATE_START = "startDate";
+    static final String ATTR_DATE_END = "endDate";
+    static final String ATTR_ACCOUNT = "account";
+    static final String ATTR_BALANCE = "balance";
 
     static final String MESSAGE_ERROR_CREATING_PAYMENT_ORDER = "Ошибка создания платежного поручения!<br/>";
     static final String MESSAGE_ERROR_CANCELLING_PAYMENT_ORDER = "Ошибка отмены платежного поручения!<br/>";

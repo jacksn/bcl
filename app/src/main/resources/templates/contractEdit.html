@@ -19,7 +19,7 @@
 <body>
 <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.min.css"
       th:href="@{/static/css/bootstrap-datetimepicker.min.css}">
-<!--/*@thymesVar id="notification" type="ru.atc.bclient.web.to.Notification"*/-->
+<!--/*@thymesVar id="notification" type="ru.atc.bclient.web.dto.Notification"*/-->
 <th:block th:include="fragments::notification" th:if="${notification}!=null"/>
 
 <th:block th:include="fragments::header('contracts')"/>

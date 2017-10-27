@@ -15,18 +15,18 @@ import ru.atc.bclient.model.entity.Contract;
 import ru.atc.bclient.model.entity.LegalEntity;
 import ru.atc.bclient.service.ContractService;
 import ru.atc.bclient.service.LegalEntityService;
+import ru.atc.bclient.web.dto.Notification;
+import ru.atc.bclient.web.dto.NotificationType;
 import ru.atc.bclient.web.security.AuthorizedUser;
-import ru.atc.bclient.web.to.Notification;
-import ru.atc.bclient.web.to.NotificationType;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_CONTRACT;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_CONTRACTS;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_LEGAL_ENTITIES;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_NOTIFICATION;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_CONTRACT;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_CONTRACTS;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_LEGAL_ENTITIES;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_NOTIFICATION;
 
 @Controller
 @RequestMapping("/contract")
@@ -41,7 +41,7 @@ public class ContractController {
 
     @GetMapping
     public String getContracts(Model model, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        model.addAttribute(ATTRIBUTE_CONTRACTS,
+        model.addAttribute(ATTR_CONTRACTS,
                 contractService.getAllByIssuersGroupByLegalEntity(authorizedUser.getLegalEntities()));
         return "contracts";
     }
@@ -53,7 +53,7 @@ public class ContractController {
         Contract contract = new Contract();
         LegalEntity legalEntity = legalEntityService.get(issuerId);
         if (legalEntity == null || !authorizedUser.getLegalEntities().contains(legalEntity)) {
-            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+            redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка создания договора"));
             return "redirect:/contract";
         }
@@ -62,8 +62,8 @@ public class ContractController {
         contract.setCloseDate(LocalDate.now()
                 .plus(1, ChronoUnit.YEARS)
                 .minus(1, ChronoUnit.DAYS));
-        model.addAttribute(ATTRIBUTE_CONTRACT, contract);
-        model.addAttribute(ATTRIBUTE_LEGAL_ENTITIES, legalEntityService.getAll());
+        model.addAttribute(ATTR_CONTRACT, contract);
+        model.addAttribute(ATTR_LEGAL_ENTITIES, legalEntityService.getAll());
         return "contractEdit";
     }
 
@@ -80,13 +80,13 @@ public class ContractController {
                         .append(error.getDefaultMessage())
                         .append(".<br/>");
             }
-            model.addAttribute(ATTRIBUTE_NOTIFICATION, new Notification(NotificationType.ERROR, message.toString()));
-            model.addAttribute(ATTRIBUTE_CONTRACT, contract);
-            model.addAttribute(ATTRIBUTE_LEGAL_ENTITIES, legalEntityService.getAll());
+            model.addAttribute(ATTR_NOTIFICATION, new Notification(NotificationType.ERROR, message.toString()));
+            model.addAttribute(ATTR_CONTRACT, contract);
+            model.addAttribute(ATTR_LEGAL_ENTITIES, legalEntityService.getAll());
             return "contractEdit";
         }
         contractService.save(contract);
-        redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+        redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                 new Notification(NotificationType.SUCCESS, "Договор успешно создан."));
         return "redirect:/contract";
     }

@@ -24,10 +24,10 @@ import ru.atc.bclient.service.ContractService;
 import ru.atc.bclient.service.LegalEntityService;
 import ru.atc.bclient.service.PaymentOrderProcessor;
 import ru.atc.bclient.service.PaymentOrderService;
+import ru.atc.bclient.web.dto.Notification;
+import ru.atc.bclient.web.dto.NotificationType;
+import ru.atc.bclient.web.dto.PaymentOrderFormData;
 import ru.atc.bclient.web.security.AuthorizedUser;
-import ru.atc.bclient.web.to.Notification;
-import ru.atc.bclient.web.to.NotificationType;
-import ru.atc.bclient.web.to.PaymentOrderFormData;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -57,9 +57,9 @@ public class PaymentOrderController {
 
     @GetMapping
     public String getAll(Model model,
-                         @RequestParam(value = ATTRIBUTE_START_DATE, required = false)
+                         @RequestParam(value = ATTR_DATE_START, required = false)
                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate starDate,
-                         @RequestParam(value = ATTRIBUTE_END_DATE, required = false)
+                         @RequestParam(value = ATTR_DATE_END, required = false)
                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                          @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         LocalDate currentDate = LocalDate.now();
@@ -73,9 +73,9 @@ public class PaymentOrderController {
         } else if (starDate.isAfter(endDate)) {
             endDate = starDate;
         }
-        model.addAttribute(ATTRIBUTE_START_DATE, starDate);
-        model.addAttribute(ATTRIBUTE_END_DATE, endDate);
-        model.addAttribute(ATTRIBUTE_PAYMENT_ORDERS,
+        model.addAttribute(ATTR_DATE_START, starDate);
+        model.addAttribute(ATTR_DATE_END, endDate);
+        model.addAttribute(ATTR_PAYMENT_ORDERS,
                 paymentOrderService.getAllBySendersGroupByLegalEntityAndAccount(starDate, endDate, authorizedUser.getLegalEntities()));
         return "paymentOrders";
     }
@@ -85,11 +85,11 @@ public class PaymentOrderController {
                        @RequestParam Integer id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         PaymentOrder paymentOrder = paymentOrderService.getBySendersAndId(authorizedUser.getLegalEntities(), id);
         if (paymentOrder == null) {
-            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+            redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка: платежное поручение не найдено."));
             return "redirect:/payment";
         }
-        model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
+        model.addAttribute(ATTR_PAYMENT_ORDER, paymentOrder);
         return "paymentOrderView";
     }
 
@@ -100,7 +100,7 @@ public class PaymentOrderController {
                          @AuthenticationPrincipal AuthorizedUser authorizedUser) {
 
         if (paymentOrderProcessor.isProcessingInProgress()) {
-            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+            redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.WARNING,
                             MESSAGE_OPERATION_CREATE + MESSAGE_DENIED_OPERATION + MESSAGE_PROCESSING_IN_PROGRESS));
             return "redirect:/payment";
@@ -124,7 +124,7 @@ public class PaymentOrderController {
         }
 
         if (errorMessage.length() > 0) {
-            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+            redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER + errorMessage));
             return "redirect:/payment";
         }
@@ -136,11 +136,11 @@ public class PaymentOrderController {
         paymentOrder.setNumber(paymentOrderService.getNewNumber(sender));
         paymentOrder.setStatus(PaymentOrderStatus.NEW);
 
-        session.setAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
+        session.setAttribute(ATTR_PAYMENT_ORDER, paymentOrder);
 
-        model.addAttribute(ATTRIBUTE_CONTRACTS, contractService.getAllActive(sender, senderAccount.getCurrencyCode()));
-        model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
-        model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_FORM_DATA, new PaymentOrderFormData());
+        model.addAttribute(ATTR_CONTRACTS, contractService.getAllActive(sender, senderAccount.getCurrencyCode()));
+        model.addAttribute(ATTR_PAYMENT_ORDER, paymentOrder);
+        model.addAttribute(ATTR_PAYMENT_ORDER_FORM_DATA, new PaymentOrderFormData());
         return "paymentOrderEdit";
     }
 
@@ -150,7 +150,7 @@ public class PaymentOrderController {
 
         StringBuilder errorMessage = new StringBuilder();
 
-        PaymentOrder paymentOrder = (PaymentOrder) session.getAttribute(ATTRIBUTE_PAYMENT_ORDER);
+        PaymentOrder paymentOrder = (PaymentOrder) session.getAttribute(ATTR_PAYMENT_ORDER);
 
         if (paymentOrder == null) {
             errorMessage.append(" ");
@@ -161,7 +161,7 @@ public class PaymentOrderController {
         }
 
         if (errorMessage.length() > 0) {
-            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+            redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER + errorMessage));
             return "redirect:/payment";
         }
@@ -169,13 +169,13 @@ public class PaymentOrderController {
         assert paymentOrder != null;
 
         if (paymentOrderProcessor.isProcessingInProgress()) {
-            model.addAttribute(ATTRIBUTE_NOTIFICATION,
+            model.addAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.WARNING,
                             MESSAGE_OPERATION_SAVE + MESSAGE_DENIED_OPERATION + MESSAGE_PROCESSING_IN_PROGRESS));
-            model.addAttribute(ATTRIBUTE_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
+            model.addAttribute(ATTR_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
                     paymentOrder.getSenderAccount().getCurrencyCode()));
-            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
-            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_FORM_DATA, paymentOrderFormData);
+            model.addAttribute(ATTR_PAYMENT_ORDER, paymentOrder);
+            model.addAttribute(ATTR_PAYMENT_ORDER_FORM_DATA, paymentOrderFormData);
             return "paymentOrderEdit";
         }
 
@@ -251,14 +251,14 @@ public class PaymentOrderController {
         }
 
         if (errorMessage.length() > 0) {
-            model.addAttribute(ATTRIBUTE_NOTIFICATION,
+            model.addAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR,
                             "<strong>При сохранении платежного поручения произошли следующие ошибки:</strong><hr/>"
                                     + errorMessage.toString()));
-            model.addAttribute(ATTRIBUTE_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
+            model.addAttribute(ATTR_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
                     paymentOrder.getSenderAccount().getCurrencyCode()));
-            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
-            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_FORM_DATA, paymentOrderFormData);
+            model.addAttribute(ATTR_PAYMENT_ORDER, paymentOrder);
+            model.addAttribute(ATTR_PAYMENT_ORDER_FORM_DATA, paymentOrderFormData);
             return "paymentOrderEdit";
         }
 
@@ -272,15 +272,15 @@ public class PaymentOrderController {
 
         try {
             paymentOrderService.save(paymentOrder);
-            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+            redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.SUCCESS, "Платежное поручение успешно создано."));
         } catch (Exception e) {
             log.error("Error saving payment order " + paymentOrder, e);
-            redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
+            redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER));
             return "redirect:/payment";
         }
-        session.removeAttribute(ATTRIBUTE_PAYMENT_ORDER);
+        session.removeAttribute(ATTR_PAYMENT_ORDER);
         return "redirect:/payment";
     }
 
@@ -306,13 +306,13 @@ public class PaymentOrderController {
                 notification = new Notification(NotificationType.ERROR, MESSAGE_ERROR_CANCELLING_PAYMENT_ORDER);
             }
         }
-        redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION, notification);
+        redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION, notification);
         return "redirect:/payment";
     }
 
     @GetMapping("reset")
     public String reset(HttpSession session) {
-        session.removeAttribute(ATTRIBUTE_PAYMENT_ORDER);
+        session.removeAttribute(ATTR_PAYMENT_ORDER);
         return "redirect:/payment";
     }
 
