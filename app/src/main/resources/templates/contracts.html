@@ -30,7 +30,7 @@
                 <div class="panel-body">
                     <h3>Договоры</h3>
                     <hr/>
-                    <div th:if="${contractMap.size() > 1}">
+                    <div th:if="${contracts.size() > 1}">
                         <div class="form-inline">
                             <div class="form-group">
                                 <label for="leFilter">Фильтр </label>
@@ -39,7 +39,7 @@
                                         onchange="filterEntries('legalEntities','legalEntity', this.value)"
                                         title="Юридические лица">
                                     <option value="ALL">Все юридические лица</option>
-                                    <option th:each="mapEntry : ${contractMap}"
+                                    <option th:each="mapEntry : ${contracts}"
                                             th:value="${mapEntry.key.id}"
                                             th:text="${mapEntry.key.shortName}">
                                     </option>
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div id="legalEntities">
-            <div class="row" th:each="mapEntry : ${contractMap}"
+            <div class="row" th:each="mapEntry : ${contracts}"
                  th:id="${'legalEntity_' + mapEntry.key.id}">
                 <div class="panel">
                     <div class="panel-heading">

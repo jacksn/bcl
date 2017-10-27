@@ -33,20 +33,12 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
 
-import static ru.atc.bclient.web.controller.CommonStringConstants.*;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.*;
 
 @Controller
 @RequestMapping("/payment")
 @Slf4j
 public class PaymentOrderController {
-    private static final String ATTRIBUTE_PAYMENT_ORDER_MAP = "paymentOrderMap";
-    private static final String MESSAGE_ERROR_CREATING_PAYMENT_ORDER = "Ошибка создания платежного поручения!<br/>";
-    private static final String MESSAGE_ERROR_CANCELLING_PAYMENT_ORDER = "Ошибка отмены платежного поручения!<br/>";
-    private static final String MESSAGE_PROCESSING_IN_PROGRESS = "Происходит обработка платежный поручений. Попробуйте снова через несколько минут";
-    private static final String MESSAGE_DENIED_OPERATION = " платежных поручений временно невозможно.<br/>";
-    private static final String MESSAGE_OPERATION_CREATE = "Создание";
-    private static final String MESSAGE_OPERATION_SAVE = "Сохранение";
-    private static final String MESSAGE_OPERATION_UPDATE = "Изменение";
 
     private PaymentOrderService paymentOrderService;
     private LegalEntityService legalEntityService;
@@ -83,7 +75,7 @@ public class PaymentOrderController {
         }
         model.addAttribute(ATTRIBUTE_START_DATE, starDate);
         model.addAttribute(ATTRIBUTE_END_DATE, endDate);
-        model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_MAP,
+        model.addAttribute(ATTRIBUTE_PAYMENT_ORDERS,
                 paymentOrderService.getAllBySendersGroupByLegalEntityAndAccount(starDate, endDate, authorizedUser.getLegalEntities()));
         return "paymentOrders";
     }
@@ -133,7 +125,7 @@ public class PaymentOrderController {
 
         if (errorMessage.length() > 0) {
             redirectAttributes.addFlashAttribute(ATTRIBUTE_NOTIFICATION,
-                    new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER + "<br/>" + errorMessage));
+                    new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER + errorMessage));
             return "redirect:/payment";
         }
 
@@ -148,7 +140,7 @@ public class PaymentOrderController {
 
         model.addAttribute(ATTRIBUTE_CONTRACTS, contractService.getAllActive(sender, senderAccount.getCurrencyCode()));
         model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
-        model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_TO, new PaymentOrderFormData());
+        model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_FORM_DATA, new PaymentOrderFormData());
         return "paymentOrderEdit";
     }
 
@@ -183,7 +175,7 @@ public class PaymentOrderController {
             model.addAttribute(ATTRIBUTE_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
                     paymentOrder.getSenderAccount().getCurrencyCode()));
             model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
-            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_TO, paymentOrderFormData);
+            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_FORM_DATA, paymentOrderFormData);
             return "paymentOrderEdit";
         }
 
@@ -266,7 +258,7 @@ public class PaymentOrderController {
             model.addAttribute(ATTRIBUTE_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
                     paymentOrder.getSenderAccount().getCurrencyCode()));
             model.addAttribute(ATTRIBUTE_PAYMENT_ORDER, paymentOrder);
-            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_TO, paymentOrderFormData);
+            model.addAttribute(ATTRIBUTE_PAYMENT_ORDER_FORM_DATA, paymentOrderFormData);
             return "paymentOrderEdit";
         }
 

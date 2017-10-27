@@ -23,9 +23,10 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_CONTRACT;
-import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_LEGAL_ENTITIES;
-import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_NOTIFICATION;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_CONTRACT;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_CONTRACTS;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_LEGAL_ENTITIES;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_NOTIFICATION;
 
 @Controller
 @RequestMapping("/contract")
@@ -40,7 +41,7 @@ public class ContractController {
 
     @GetMapping
     public String getContracts(Model model, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        model.addAttribute("contractMap",
+        model.addAttribute(ATTRIBUTE_CONTRACTS,
                 contractService.getAllByIssuersGroupByLegalEntity(authorizedUser.getLegalEntities()));
         return "contracts";
     }

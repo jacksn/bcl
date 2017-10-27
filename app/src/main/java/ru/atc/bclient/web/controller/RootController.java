@@ -9,8 +9,8 @@ import ru.atc.bclient.web.security.AuthorizedUser;
 import ru.atc.bclient.web.to.Notification;
 import ru.atc.bclient.web.to.NotificationType;
 
-import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_LEGAL_ENTITIES;
-import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_NOTIFICATION;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_LEGAL_ENTITIES;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_NOTIFICATION;
 
 @Controller
 @RequestMapping("/")
@@ -18,7 +18,7 @@ public class RootController {
     @GetMapping
     public String root(Model model, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         model.addAttribute(ATTRIBUTE_LEGAL_ENTITIES, authorizedUser.getLegalEntities());
-        return "userLegalEntities";
+        return "accounts";
     }
 
     @RequestMapping("login")

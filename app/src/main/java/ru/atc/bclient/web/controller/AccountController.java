@@ -15,14 +15,13 @@ import ru.atc.bclient.web.to.NotificationType;
 
 import java.util.Set;
 
-import static ru.atc.bclient.web.controller.CommonStringConstants.ATTRIBUTE_NOTIFICATION;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_ACCOUNT;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_BALANCE;
+import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTRIBUTE_NOTIFICATION;
 
 @Controller
 @RequestMapping("/account")
 public class AccountController {
-    private static final String ATTRIBUTE_ACCOUNT = "account";
-    private static final String ATTRIBUTE_BALANCE = "balance";
-
     private AccountService accountService;
 
     public AccountController(AccountService accountService) {
@@ -42,6 +41,6 @@ public class AccountController {
         }
         model.addAttribute(ATTRIBUTE_ACCOUNT, account);
         model.addAttribute(ATTRIBUTE_BALANCE, accountService.getBalance(accountId));
-        return "accountDetails";
+        return "accountView";
     }
 }

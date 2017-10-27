@@ -33,14 +33,14 @@
                     <h3>Платежные поручения</h3>
                     <hr/>
                     <form class="form-inline" method="get">
-                        <div class="form-group" th:if="${paymentOrderMap.size() > 1}">
+                        <div class="form-group" th:if="${paymentOrders.size() > 1}">
                             <label for="leFilter">Фильтр </label>
                             <select class="form-control"
                                     id="leFilter"
                                     onchange="filterEntries('legalEntities','legalEntity', this.value)"
                                     title="Юридические лица">
                                 <option value="ALL">Все юридические лица</option>
-                                <option th:each="legalEntityEntry : ${paymentOrderMap}"
+                                <option th:each="legalEntityEntry : ${paymentOrders}"
                                         th:value="${legalEntityEntry.key.id}"
                                         th:text="${legalEntityEntry.key.shortName}">
                                 </option>
@@ -67,7 +67,7 @@
         </div>
         <div id="legalEntities">
             <div class="row"
-                 th:each="legalEntityEntry : ${paymentOrderMap}"
+                 th:each="legalEntityEntry : ${paymentOrders}"
                  th:id="${'legalEntity_' + legalEntityEntry.key.id}">
                 <div class="panel">
                     <div class="panel-heading">
