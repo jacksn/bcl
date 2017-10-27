@@ -6,7 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +37,7 @@ import static ru.atc.bclient.web.controller.ControllerStringConstants.*;
 @Controller
 @RequestMapping("/payment")
 @Slf4j
-public class PaymentOrderController {
+public class PaymentOrderController extends AbstractController {
 
     private PaymentOrderService paymentOrderService;
     private LegalEntityService legalEntityService;
@@ -146,7 +145,7 @@ public class PaymentOrderController {
 
     @PostMapping("save")
     public String save(Model model, RedirectAttributes redirectAttributes, HttpSession session,
-                       @Valid @ModelAttribute PaymentOrderFormData paymentOrderFormData, BindingResult result) {
+                       @Valid @ModelAttribute PaymentOrderFormData paymentOrderFormData, BindingResult bindingResult) {
 
         StringBuilder errorMessage = new StringBuilder();
 
@@ -243,12 +242,7 @@ public class PaymentOrderController {
             }
         }
 
-        if (result.hasErrors()) {
-            for (FieldError error : result.getFieldErrors()) {
-                errorMessage.append("Поле \"").append(error.getField()).append("\" ")
-                        .append(error.getDefaultMessage()).append(".<br/>");
-            }
-        }
+        errorMessage.append(getFieldErrorMessages(bindingResult.getFieldErrors()));
 
         if (errorMessage.length() > 0) {
             model.addAttribute(ATTR_NOTIFICATION,

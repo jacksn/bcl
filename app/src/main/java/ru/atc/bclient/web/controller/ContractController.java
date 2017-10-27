@@ -4,7 +4,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +29,7 @@ import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_NOTIF
 
 @Controller
 @RequestMapping("/contract")
-public class ContractController {
+public class ContractController extends AbstractController {
     private ContractService contractService;
     private LegalEntityService legalEntityService;
 
@@ -50,18 +49,17 @@ public class ContractController {
     public String createContract(Model model, RedirectAttributes redirectAttributes,
                                  @RequestParam Integer issuerId,
                                  @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        Contract contract = new Contract();
         LegalEntity legalEntity = legalEntityService.get(issuerId);
         if (legalEntity == null || !authorizedUser.getLegalEntities().contains(legalEntity)) {
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка создания договора"));
             return "redirect:/contract";
         }
+        LocalDate currentDate = LocalDate.now();
+        Contract contract = new Contract();
         contract.setIssuer(legalEntity);
-        contract.setOpenDate(LocalDate.now());
-        contract.setCloseDate(LocalDate.now()
-                .plus(1, ChronoUnit.YEARS)
-                .minus(1, ChronoUnit.DAYS));
+        contract.setOpenDate(currentDate);
+        contract.setCloseDate(currentDate.plus(1, ChronoUnit.YEARS).minus(1, ChronoUnit.DAYS));
         model.addAttribute(ATTR_CONTRACT, contract);
         model.addAttribute(ATTR_LEGAL_ENTITIES, legalEntityService.getAll());
         return "contractEdit";
@@ -71,16 +69,9 @@ public class ContractController {
     public String saveContract(Model model, RedirectAttributes redirectAttributes,
                                @Valid @ModelAttribute Contract contract, BindingResult result) {
         if (result.hasErrors()) {
-            StringBuilder message = new StringBuilder()
-                    .append("<strong>При сохранении договора произошли следующие ошибки:</strong><hr/>");
-            for (FieldError error : result.getFieldErrors()) {
-                message.append("<strong>Поле ")
-                        .append(error.getField())
-                        .append(":</strong> ")
-                        .append(error.getDefaultMessage())
-                        .append(".<br/>");
-            }
-            model.addAttribute(ATTR_NOTIFICATION, new Notification(NotificationType.ERROR, message.toString()));
+            String message = "<strong>При сохранении договора произошли следующие ошибки:</strong><hr/>" +
+                    getFieldErrorMessages(result.getFieldErrors());
+            model.addAttribute(ATTR_NOTIFICATION, new Notification(NotificationType.ERROR, message));
             model.addAttribute(ATTR_CONTRACT, contract);
             model.addAttribute(ATTR_LEGAL_ENTITIES, legalEntityService.getAll());
             return "contractEdit";
