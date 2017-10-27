@@ -22,14 +22,13 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_CONTRACT;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_CONTRACTS;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_LEGAL_ENTITIES;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_NOTIFICATION;
+import static ru.atc.bclient.web.controller.ContractController.PATH;
 
 @Controller
-@RequestMapping("/contract")
+@RequestMapping(PATH)
 public class ContractController extends AbstractController {
+    static final String PATH = "/contract";
+
     private ContractService contractService;
     private LegalEntityService legalEntityService;
 
@@ -53,7 +52,7 @@ public class ContractController extends AbstractController {
         if (legalEntity == null || !authorizedUser.getLegalEntities().contains(legalEntity)) {
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка создания договора"));
-            return "redirect:/contract";
+            return REDIRECT + PATH;
         }
         LocalDate currentDate = LocalDate.now();
         Contract contract = new Contract();
@@ -69,7 +68,7 @@ public class ContractController extends AbstractController {
     public String saveContract(Model model, RedirectAttributes redirectAttributes,
                                @Valid @ModelAttribute Contract contract, BindingResult result) {
         if (result.hasErrors()) {
-            String message = "<strong>При сохранении договора произошли следующие ошибки:</strong><hr/>" +
+            String message = "<strong>При сохранении договора произошли следующие ошибки:</strong>" +
                     getFieldErrorMessages(result.getFieldErrors());
             model.addAttribute(ATTR_NOTIFICATION, new Notification(NotificationType.ERROR, message));
             model.addAttribute(ATTR_CONTRACT, contract);
@@ -79,6 +78,6 @@ public class ContractController extends AbstractController {
         contractService.save(contract);
         redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                 new Notification(NotificationType.SUCCESS, "Договор успешно создан."));
-        return "redirect:/contract";
+        return REDIRECT + PATH;
     }
 }

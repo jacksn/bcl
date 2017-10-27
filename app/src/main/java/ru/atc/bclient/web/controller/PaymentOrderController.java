@@ -32,12 +32,13 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
 
-import static ru.atc.bclient.web.controller.ControllerStringConstants.*;
+import static ru.atc.bclient.web.controller.PaymentOrderController.PATH;
 
 @Controller
-@RequestMapping("/payment")
+@RequestMapping(PATH)
 @Slf4j
 public class PaymentOrderController extends AbstractController {
+    static final String PATH = "/payment";
 
     private PaymentOrderService paymentOrderService;
     private LegalEntityService legalEntityService;
@@ -55,28 +56,36 @@ public class PaymentOrderController extends AbstractController {
     }
 
     @GetMapping
-    public String getAll(Model model,
-                         @RequestParam(value = ATTR_DATE_START, required = false)
-                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate starDate,
-                         @RequestParam(value = ATTR_DATE_END, required = false)
-                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                         @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+    public String getAll(Model model, HttpSession session, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        LocalDate startDate = (LocalDate) session.getAttribute(ATTR_DATE_START);
+        LocalDate endDate = (LocalDate) session.getAttribute(ATTR_DATE_END);
         LocalDate currentDate = LocalDate.now();
-        if (starDate == null && endDate == null) {
-            starDate = currentDate;
+        if (startDate == null && endDate == null) {
+            startDate = currentDate;
             endDate = currentDate;
         } else if (endDate == null) {
-            endDate = starDate.isBefore(currentDate) ? currentDate : starDate;
-        } else if (starDate == null) {
-            starDate = endDate.isAfter(currentDate) ? currentDate : endDate;
-        } else if (starDate.isAfter(endDate)) {
-            endDate = starDate;
+            endDate = startDate.isBefore(currentDate) ? currentDate : startDate;
+        } else if (startDate == null) {
+            startDate = endDate.isAfter(currentDate) ? currentDate : endDate;
+        } else if (startDate.isAfter(endDate)) {
+            endDate = startDate;
         }
-        model.addAttribute(ATTR_DATE_START, starDate);
+        model.addAttribute(ATTR_DATE_START, startDate);
         model.addAttribute(ATTR_DATE_END, endDate);
         model.addAttribute(ATTR_PAYMENT_ORDERS,
-                paymentOrderService.getAllBySendersGroupByLegalEntityAndAccount(starDate, endDate, authorizedUser.getLegalEntities()));
+                paymentOrderService.getAllBySendersGroupByLegalEntityAndAccount(startDate, endDate, authorizedUser.getLegalEntities()));
         return "paymentOrders";
+    }
+
+    @PostMapping("filter")
+    public String filter(HttpSession session,
+                         @RequestParam(value = ATTR_DATE_START)
+                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                         @RequestParam(value = ATTR_DATE_END)
+                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        session.setAttribute(ATTR_DATE_START, startDate);
+        session.setAttribute(ATTR_DATE_END, endDate);
+        return REDIRECT + PATH;
     }
 
     @GetMapping("view")
@@ -86,7 +95,7 @@ public class PaymentOrderController extends AbstractController {
         if (paymentOrder == null) {
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка: платежное поручение не найдено."));
-            return "redirect:/payment";
+            return REDIRECT + PATH;
         }
         model.addAttribute(ATTR_PAYMENT_ORDER, paymentOrder);
         return "paymentOrderView";
@@ -102,7 +111,7 @@ public class PaymentOrderController extends AbstractController {
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.WARNING,
                             MESSAGE_OPERATION_CREATE + MESSAGE_DENIED_OPERATION + MESSAGE_PROCESSING_IN_PROGRESS));
-            return "redirect:/payment";
+            return REDIRECT + PATH;
         }
 
         PaymentOrder paymentOrder = new PaymentOrder();
@@ -125,7 +134,7 @@ public class PaymentOrderController extends AbstractController {
         if (errorMessage.length() > 0) {
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER + errorMessage));
-            return "redirect:/payment";
+            return REDIRECT + PATH;
         }
 
         paymentOrder.setSender(sender);
@@ -146,7 +155,6 @@ public class PaymentOrderController extends AbstractController {
     @PostMapping("save")
     public String save(Model model, RedirectAttributes redirectAttributes, HttpSession session,
                        @Valid @ModelAttribute PaymentOrderFormData paymentOrderFormData, BindingResult bindingResult) {
-
         StringBuilder errorMessage = new StringBuilder();
 
         PaymentOrder paymentOrder = (PaymentOrder) session.getAttribute(ATTR_PAYMENT_ORDER);
@@ -162,7 +170,7 @@ public class PaymentOrderController extends AbstractController {
         if (errorMessage.length() > 0) {
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER + errorMessage));
-            return "redirect:/payment";
+            return REDIRECT + PATH;
         }
 
         assert paymentOrder != null;
@@ -186,68 +194,18 @@ public class PaymentOrderController extends AbstractController {
             if (recipient == null) {
                 errorMessage.append("Получатель платежа не найден.<br/>");
             } else {
-                Integer recipientAccountId = paymentOrderFormData.getRecipientAccountId();
-                if (recipientAccountId == null) {
-                    errorMessage.append("Счет получателя платежа не найден.<br/>");
-                } else {
-                    recipientAccount = accountService.get(recipientAccountId);
-                    if (recipientAccount == null) {
-                        errorMessage.append("Счет получателя платежа не найден.<br/>");
-                    } else {
-                        if (!recipient.getAccounts().contains(recipientAccount)) {
-                            errorMessage.append("Счет получателя платежа принадлежит другому юридическому лицу.<br/>");
-                        }
-                        if (!recipientAccount.getStatus().equals(AccountStatus.ACTIVE)) {
-                            errorMessage.append("Счет получателя не активен.<br/>");
-                        }
-                        if (recipientAccount.equals(paymentOrder.getSenderAccount())) {
-                            errorMessage.append("Счета отправителя и получателя совпадают.<br/>");
-                        }
-                        if (!paymentOrder.getSenderAccount().getCurrencyCode().equals(recipientAccount.getCurrencyCode())) {
-                            errorMessage.append("Валюты счетов отправителя и получателя не совпадают.<br/>");
-                        }
-                        if (!paymentOrder.getCurrencyCode().equals(recipientAccount.getCurrencyCode())) {
-                            errorMessage.append("Валюты платежного поручения и счета получателя не совпадают.<br/>");
-                        }
-                    }
-                }
+                recipientAccount = validateRecipientAccount(errorMessage, paymentOrder, paymentOrderFormData.getRecipientAccountId());
             }
         }
 
-        Integer contractId = paymentOrderFormData.getContractId();
-        Contract contract = null;
-        if (contractId != null) {
-            contract = contractService.get(contractId);
-            if (contract == null) {
-                errorMessage.append("Договор не найден.<br/>");
-            } else {
-                if (!contract.getIssuer().equals(paymentOrder.getSender())) {
-                    errorMessage.append("Отправитель не совпадает с эмитентом договора.<br/>");
-                }
-                if (!contract.getSigner().equals(paymentOrder.getRecipient())) {
-                    errorMessage.append("Получатель не совпадает с подписантом договора.<br/>");
-                }
-                if (!contract.getCurrencyCode().equals(paymentOrder.getSenderAccount().getCurrencyCode())) {
-                    errorMessage.append("Валюта счета отправителя не совпадает с валютой договора.<br/>");
-                }
-                if (!contract.getCurrencyCode().equals(paymentOrder.getRecipientAccount().getCurrencyCode())) {
-                    errorMessage.append("Валюта счета получателя не совпадает с валютой договора.<br/>");
-                }
-                if (!contract.getCloseDate().isAfter(LocalDate.now())) {
-                    errorMessage.append("Дата окончания действия договора меньше текущей.<br/>");
-                }
-                if (!contract.getOpenDate().isBefore(LocalDate.now())) {
-                    errorMessage.append("Дата начала действия договора больше текущей.<br/>");
-                }
-            }
-        }
+        Contract contract = validateContract(errorMessage, paymentOrder, paymentOrderFormData.getContractId());
 
         errorMessage.append(getFieldErrorMessages(bindingResult.getFieldErrors()));
 
         if (errorMessage.length() > 0) {
             model.addAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR,
-                            "<strong>При сохранении платежного поручения произошли следующие ошибки:</strong><hr/>"
+                            "<strong>При сохранении платежного поручения произошли следующие ошибки:</strong>"
                                     + errorMessage.toString()));
             model.addAttribute(ATTR_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
                     paymentOrder.getSenderAccount().getCurrencyCode()));
@@ -268,14 +226,64 @@ public class PaymentOrderController extends AbstractController {
             paymentOrderService.save(paymentOrder);
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.SUCCESS, "Платежное поручение успешно создано."));
+            session.removeAttribute(ATTR_PAYMENT_ORDER);
         } catch (Exception e) {
             log.error("Error saving payment order " + paymentOrder, e);
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, MESSAGE_ERROR_CREATING_PAYMENT_ORDER));
-            return "redirect:/payment";
         }
-        session.removeAttribute(ATTR_PAYMENT_ORDER);
-        return "redirect:/payment";
+        return REDIRECT + PATH;
+    }
+
+    private Account validateRecipientAccount(StringBuilder errorMessage, PaymentOrder paymentOrder, Integer recipientAccountId) {
+        Account recipientAccount = null;
+        if (recipientAccountId == null || (recipientAccount = accountService.get(recipientAccountId)) == null) {
+            errorMessage.append("Счет получателя платежа не найден.<br/>");
+        } else {
+            if (!paymentOrder.getRecipient().getAccounts().contains(recipientAccount)) {
+                errorMessage.append("Счет получателя платежа принадлежит другому юридическому лицу.<br/>");
+            }
+            if (!recipientAccount.getStatus().equals(AccountStatus.ACTIVE)) {
+                errorMessage.append("Счет получателя не активен.<br/>");
+            }
+            if (recipientAccount.equals(paymentOrder.getSenderAccount())) {
+                errorMessage.append("Счета отправителя и получателя совпадают.<br/>");
+            }
+            if (!paymentOrder.getSenderAccount().getCurrencyCode().equals(recipientAccount.getCurrencyCode())) {
+                errorMessage.append("Валюты счетов отправителя и получателя не совпадают.<br/>");
+            }
+            if (!paymentOrder.getCurrencyCode().equals(recipientAccount.getCurrencyCode())) {
+                errorMessage.append("Валюты платежного поручения и счета получателя не совпадают.<br/>");
+            }
+        }
+        return recipientAccount;
+    }
+
+    private Contract validateContract(StringBuilder errorMessage, PaymentOrder paymentOrder, Integer contractId) {
+        Contract contract = null;
+        if (contractId == null || (contract = contractService.get(contractId)) == null) {
+            errorMessage.append("Договор не найден.<br/>");
+        } else {
+            if (!contract.getIssuer().equals(paymentOrder.getSender())) {
+                errorMessage.append("Отправитель не совпадает с эмитентом договора.<br/>");
+            }
+            if (!contract.getSigner().equals(paymentOrder.getRecipient())) {
+                errorMessage.append("Получатель не совпадает с подписантом договора.<br/>");
+            }
+            if (!contract.getCurrencyCode().equals(paymentOrder.getSenderAccount().getCurrencyCode())) {
+                errorMessage.append("Валюта счета отправителя не совпадает с валютой договора.<br/>");
+            }
+            if (!contract.getCurrencyCode().equals(paymentOrder.getRecipientAccount().getCurrencyCode())) {
+                errorMessage.append("Валюта счета получателя не совпадает с валютой договора.<br/>");
+            }
+            if (!contract.getCloseDate().isAfter(LocalDate.now())) {
+                errorMessage.append("Дата окончания действия договора меньше текущей.<br/>");
+            }
+            if (!contract.getOpenDate().isBefore(LocalDate.now())) {
+                errorMessage.append("Дата начала действия договора больше текущей.<br/>");
+            }
+        }
+        return contract;
     }
 
     @PostMapping("cancel")
@@ -301,18 +309,18 @@ public class PaymentOrderController extends AbstractController {
             }
         }
         redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION, notification);
-        return "redirect:/payment";
+        return REDIRECT + PATH;
     }
 
     @GetMapping("reset")
     public String reset(HttpSession session) {
         session.removeAttribute(ATTR_PAYMENT_ORDER);
-        return "redirect:/payment";
+        return REDIRECT + PATH;
     }
 
     @GetMapping("process")
     public String process() {
         paymentOrderProcessor.process();
-        return "redirect:/payment";
+        return REDIRECT + PATH;
     }
 }

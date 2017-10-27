@@ -15,13 +15,13 @@ import ru.atc.bclient.web.security.AuthorizedUser;
 
 import java.util.Set;
 
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_ACCOUNT;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_BALANCE;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_NOTIFICATION;
+import static ru.atc.bclient.web.controller.AccountController.PATH;
 
 @Controller
-@RequestMapping("/account")
-public class AccountController {
+@RequestMapping(PATH)
+public class AccountController extends AbstractController {
+    static final String PATH = "/account";
+
     private AccountService accountService;
 
     public AccountController(AccountService accountService) {
@@ -37,7 +37,7 @@ public class AccountController {
         if (account == null || !userAccounts.contains(account)) {
             redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR, "Ошибка: счет не найден."));
-            return "redirect:/";
+            return REDIRECT + "/";
         }
         model.addAttribute(ATTR_ACCOUNT, account);
         model.addAttribute(ATTR_BALANCE, accountService.getBalance(accountId));

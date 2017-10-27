@@ -9,12 +9,9 @@ import ru.atc.bclient.web.dto.Notification;
 import ru.atc.bclient.web.dto.NotificationType;
 import ru.atc.bclient.web.security.AuthorizedUser;
 
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_LEGAL_ENTITIES;
-import static ru.atc.bclient.web.controller.ControllerStringConstants.ATTR_NOTIFICATION;
-
 @Controller
 @RequestMapping("/")
-public class RootController {
+public class RootController extends AbstractController {
     @GetMapping
     public String root(Model model, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         model.addAttribute(ATTR_LEGAL_ENTITIES, authorizedUser.getLegalEntities());

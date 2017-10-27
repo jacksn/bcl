@@ -32,7 +32,7 @@
                 <div class="panel-body">
                     <h3>Платежные поручения</h3>
                     <hr/>
-                    <form class="form-inline" method="get">
+                    <form class="form-inline" method="POST" action="/payment/filter" th:action="@{/payment/filter}">
                         <div class="form-group" th:if="${paymentOrders.size() > 1}">
                             <label for="leFilter">Фильтр </label>
                             <select class="form-control"
