@@ -1,6 +1,5 @@
 package ru.atc.bclient.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -60,7 +59,6 @@ public class LegalEntity extends BaseEntity {
     @Size(max = 500)
     private String address;
 
-    @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "legal_entity_id")
     private Set<Account> accounts;

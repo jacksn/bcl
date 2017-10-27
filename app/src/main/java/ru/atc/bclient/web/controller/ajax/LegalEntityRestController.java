@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import ru.atc.bclient.model.entity.LegalEntity;
 import ru.atc.bclient.service.LegalEntityService;
+import ru.atc.bclient.web.dto.LegalEntityDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/ajax/legalEntities", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -22,12 +23,12 @@ public class LegalEntityRestController {
     }
 
     @GetMapping("/{id}")
-    public LegalEntity get(@PathVariable("id") Integer id) {
-        return service.get(id);
+    public LegalEntityDto get(@PathVariable("id") Integer id) {
+        return LegalEntityDto.ofLegalEntity(service.get(id));
     }
 
     @GetMapping
-    public List<LegalEntity> getAll() {
-        return service.getAll();
+    public List<LegalEntityDto> getAll() {
+        return service.getAll().stream().map(LegalEntityDto::ofLegalEntity).collect(Collectors.toList());
     }
 }

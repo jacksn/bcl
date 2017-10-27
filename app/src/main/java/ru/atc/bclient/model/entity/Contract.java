@@ -1,6 +1,5 @@
 package ru.atc.bclient.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,12 +52,10 @@ public class Contract extends BaseEntity {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate closeDate;
 
-    @JsonManagedReference
     @ManyToOne(optional = false)
     @JoinColumn(name = "issuer_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity issuer;
 
-    @JsonManagedReference
     @ManyToOne(optional = false)
     @JoinColumn(name = "signer_legal_entity_id", referencedColumnName = "legal_entity_id")
     private LegalEntity signer;

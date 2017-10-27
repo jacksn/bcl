@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.atc.bclient.model.entity.Contract;
 import ru.atc.bclient.service.ContractService;
+import ru.atc.bclient.web.dto.ContractDto;
 import ru.atc.bclient.web.security.AuthorizedUser;
 
 @Controller
@@ -22,10 +23,10 @@ public class ContractRestController {
     }
 
     @GetMapping("/{id}")
-    public Contract get(@PathVariable("id") Integer id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+    public ContractDto get(@PathVariable("id") Integer id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         Contract contract = service.get(id);
         if (authorizedUser.getLegalEntities().contains(contract.getIssuer())) {
-            return contract;
+            return ContractDto.ofContract(contract);
         } else {
             return null;
         }
