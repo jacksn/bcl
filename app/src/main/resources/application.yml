@@ -13,6 +13,11 @@ spring:
     mode: HTML
     cache: false
 
+# Application settings
+application:
+  # Payment orders processing schedule
+  processing.schedule: "0 0 18 * * MON-FRI"
+
 # Logging settings
 logging:
   pattern:

@@ -42,7 +42,7 @@ public class PaymentOrderProcessorImpl implements PaymentOrderProcessor {
         this.processingInProgress = processingInProgress;
     }
 
-    @Scheduled(cron = "0 0 18 * * MON-FRI")
+    @Scheduled(cron = "${application.processing.schedule}")
     @Override
     @Transactional
     public void process() {
