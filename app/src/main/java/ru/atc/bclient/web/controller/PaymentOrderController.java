@@ -194,18 +194,23 @@ public class PaymentOrderController extends AbstractController {
             if (recipient == null) {
                 errorMessage.append("Получатель платежа не найден.<br/>");
             } else {
+                paymentOrder.setRecipient(recipient);
                 recipientAccount = validateRecipientAccount(errorMessage, paymentOrder, paymentOrderFormData.getRecipientAccountId());
             }
         }
 
-        Contract contract = validateContract(errorMessage, paymentOrder, paymentOrderFormData.getContractId());
+        Contract contract = null;
+        Integer contractId = paymentOrderFormData.getContractId();
+        if (contractId != null) {
+            contract = validateContract(errorMessage, paymentOrder, contractId);
+        }
 
         errorMessage.append(getFieldErrorMessages(bindingResult.getFieldErrors()));
 
         if (errorMessage.length() > 0) {
             model.addAttribute(ATTR_NOTIFICATION,
                     new Notification(NotificationType.ERROR,
-                            "<strong>При сохранении платежного поручения произошли следующие ошибки:</strong>"
+                            "<strong>При сохранении платежного поручения произошли следующие ошибки:</strong><br/>"
                                     + errorMessage.toString()));
             model.addAttribute(ATTR_CONTRACTS, contractService.getAllActive(paymentOrder.getSender(),
                     paymentOrder.getSenderAccount().getCurrencyCode()));
@@ -214,7 +219,6 @@ public class PaymentOrderController extends AbstractController {
             return "paymentOrderEdit";
         }
 
-        paymentOrder.setRecipient(recipient);
         paymentOrder.setRecipientAccount(recipientAccount);
         paymentOrder.setContract(contract);
         paymentOrder.setAmount(paymentOrderFormData.getAmount());
@@ -236,8 +240,8 @@ public class PaymentOrderController extends AbstractController {
     }
 
     private Account validateRecipientAccount(StringBuilder errorMessage, PaymentOrder paymentOrder, Integer recipientAccountId) {
-        Account recipientAccount = null;
-        if (recipientAccountId == null || (recipientAccount = accountService.get(recipientAccountId)) == null) {
+        Account recipientAccount = recipientAccountId == null ? null : accountService.get(recipientAccountId);
+        if (recipientAccount == null) {
             errorMessage.append("Счет получателя платежа не найден.<br/>");
         } else {
             if (!paymentOrder.getRecipient().getAccounts().contains(recipientAccount)) {
