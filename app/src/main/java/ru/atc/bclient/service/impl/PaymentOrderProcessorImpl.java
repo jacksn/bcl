@@ -14,6 +14,7 @@ import ru.atc.bclient.model.repository.OperationRepository;
 import ru.atc.bclient.model.repository.PaymentOrderRepository;
 import ru.atc.bclient.service.PaymentOrderProcessor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,45 +61,16 @@ public class PaymentOrderProcessorImpl implements PaymentOrderProcessor {
 
             for (PaymentOrder paymentOrder : paymentOrdersToProcess) {
                 paymentOrder.setStatus(PaymentOrderStatus.IN_PROGRESS);
-                if (!paymentOrder.getSenderAccount().getStatus().equals(AccountStatus.ACTIVE)) {
-                    paymentOrder.setStatus(PaymentOrderStatus.REJECTED);
-                    paymentOrder.setRejectReason("Счет отправителя не активен.");
-                } else if (!paymentOrder.getRecipientAccount().getStatus().equals(AccountStatus.ACTIVE)) {
-                    paymentOrder.setStatus(PaymentOrderStatus.REJECTED);
-                    paymentOrder.setRejectReason("Счет получателя не активен.");
-                } else if (paymentOrder.getAmount()
-                        .compareTo(accountBalanceRepository.getFirstByAccountIdOrderByDateDesc(paymentOrder.getSenderAccount().getId())
-                                .getAmount()) > 0) {
-                    paymentOrder.setStatus(PaymentOrderStatus.REJECTED);
-                    paymentOrder.setRejectReason("На счете отправителя недостаточно средств.");
-                } else {
-                    Operation operation = new Operation(
-                            currentDate,
-                            paymentOrder.getAmount(),
-                            paymentOrder.getSenderAccount(),
-                            paymentOrder.getRecipientAccount(),
-                            paymentOrder.getReason());
-                    operationRepository.save(operation);
+                if (isPaymentOrderValid(paymentOrder)) {
+                    createOperation(paymentOrder);
 
-                    AccountBalance senderBalance =
-                            accountBalanceRepository.getFirstByAccountIdOrderByDateDesc(paymentOrder.getSenderAccount().getId());
-                    if (!senderBalance.getDate().isEqual(currentDate)) {
-                        senderBalance = new AccountBalance(currentDate, senderBalance.getAmount(), senderBalance.getAccount());
-                    }
-
-                    AccountBalance recipientBalance =
-                            accountBalanceRepository.getFirstByAccountIdOrderByDateDesc(paymentOrder.getRecipientAccount().getId());
-                    if (!recipientBalance.getDate().isEqual(currentDate)) {
-                        recipientBalance = new AccountBalance(currentDate, recipientBalance.getAmount(), recipientBalance.getAccount());
-                    }
-
-                    senderBalance.setAmount(senderBalance.getAmount().subtract(operation.getAmount()));
-                    recipientBalance.setAmount(recipientBalance.getAmount().add(operation.getAmount()));
-
-                    accountBalanceRepository.save(senderBalance);
-                    accountBalanceRepository.save(recipientBalance);
+                    BigDecimal amount = paymentOrder.getAmount();
+                    updateAccountBalance(currentDate, paymentOrder.getSenderAccount().getId(), amount.negate());
+                    updateAccountBalance(currentDate, paymentOrder.getRecipientAccount().getId(), amount);
 
                     paymentOrder.setStatus(PaymentOrderStatus.EXECUTED);
+                } else {
+                    paymentOrder.setStatus(PaymentOrderStatus.REJECTED);
                 }
                 paymentOrderRepository.save(paymentOrder);
             }
@@ -108,5 +80,41 @@ public class PaymentOrderProcessorImpl implements PaymentOrderProcessor {
         }
         log.info("Processing end");
         setProcessingInProgress(false);
+    }
+
+    private boolean isPaymentOrderValid(PaymentOrder paymentOrder) {
+        if (!paymentOrder.getSenderAccount().getStatus().equals(AccountStatus.ACTIVE)) {
+            paymentOrder.setRejectReason("Счет отправителя не активен.");
+            return false;
+        } else if (!paymentOrder.getRecipientAccount().getStatus().equals(AccountStatus.ACTIVE)) {
+            paymentOrder.setRejectReason("Счет получателя не активен.");
+            return false;
+        } else if (paymentOrder.getAmount()
+                .compareTo(accountBalanceRepository.getFirstByAccountIdOrderByDateDesc(paymentOrder.getSenderAccount().getId())
+                        .getAmount()) > 0) {
+            paymentOrder.setRejectReason("На счете отправителя недостаточно средств.");
+            return false;
+        }
+        return true;
+    }
+
+    private void updateAccountBalance(LocalDate date, Integer accountId, BigDecimal amount) {
+        AccountBalance accountBalance =
+                accountBalanceRepository.getFirstByAccountIdOrderByDateDesc(accountId);
+        if (!accountBalance.getDate().isEqual(date)) {
+            accountBalance = new AccountBalance(date, accountBalance.getAmount(), accountBalance.getAccount());
+        }
+        accountBalance.setAmount(accountBalance.getAmount().add(amount));
+        accountBalanceRepository.save(accountBalance);
+    }
+
+    private void createOperation(PaymentOrder paymentOrder) {
+        Operation operation = new Operation(
+                paymentOrder.getDate(),
+                paymentOrder.getAmount(),
+                paymentOrder.getSenderAccount(),
+                paymentOrder.getRecipientAccount(),
+                paymentOrder.getReason());
+        operationRepository.save(operation);
     }
 }
