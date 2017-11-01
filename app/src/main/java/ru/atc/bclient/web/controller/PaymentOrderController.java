@@ -6,23 +6,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.atc.bclient.model.entity.Account;
-import ru.atc.bclient.model.entity.AccountStatus;
-import ru.atc.bclient.model.entity.Contract;
-import ru.atc.bclient.model.entity.LegalEntity;
-import ru.atc.bclient.model.entity.PaymentOrder;
-import ru.atc.bclient.model.entity.PaymentOrderStatus;
-import ru.atc.bclient.service.AccountService;
-import ru.atc.bclient.service.ContractService;
-import ru.atc.bclient.service.LegalEntityService;
-import ru.atc.bclient.service.PaymentOrderProcessor;
-import ru.atc.bclient.service.PaymentOrderService;
+import ru.atc.bclient.model.entity.*;
+import ru.atc.bclient.service.*;
 import ru.atc.bclient.web.dto.Notification;
 import ru.atc.bclient.web.dto.NotificationType;
 import ru.atc.bclient.web.dto.PaymentOrderFormData;
@@ -294,23 +281,22 @@ public class PaymentOrderController extends AbstractController {
     public String cancel(@RequestParam Integer id, RedirectAttributes redirectAttributes,
                          @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         Notification notification;
-        PaymentOrder paymentOrder = paymentOrderService.get(id);
-        if (paymentOrder == null || !authorizedUser.getLegalEntities().contains(paymentOrder.getSender())) {
-            notification = new Notification(NotificationType.ERROR, "Платежное поручение не найдено.");
-        } else if (!(paymentOrder.getStatus().equals(PaymentOrderStatus.NEW) || paymentOrder.getStatus().equals(PaymentOrderStatus.ACCEPTED))) {
-            notification = new Notification(NotificationType.ERROR, "Отмена платежного поручения запрещена.");
-        } else if (paymentOrderProcessor.isProcessingInProgress()) {
+        try {
+            PaymentOrder paymentOrder = paymentOrderService.get(id);
+            if (authorizedUser.getLegalEntities().contains(paymentOrder.getSender())) {
+                paymentOrderService.cancel(paymentOrder);
+                notification = new Notification(NotificationType.SUCCESS, "Платежное поручение успешно отменено.");
+            } else {
+                notification = new Notification(NotificationType.ERROR, "Платежное поручение не найдено.");
+            }
+        } catch (IllegalArgumentException e) {
+            notification = new Notification(NotificationType.ERROR, e.getMessage());
+        } catch (IllegalStateException e) {
             notification = new Notification(NotificationType.WARNING,
                     MESSAGE_OPERATION_UPDATE + MESSAGE_DENIED_OPERATION + MESSAGE_PROCESSING_IN_PROGRESS);
-        } else {
-            try {
-                paymentOrder.setStatus(PaymentOrderStatus.CANCELLED);
-                paymentOrderService.save(paymentOrder);
-                notification = new Notification(NotificationType.SUCCESS, "Платежное поручение успешно отменено.");
-            } catch (Exception e) {
-                log.error("Error saving payment order " + paymentOrder, e);
-                notification = new Notification(NotificationType.ERROR, MESSAGE_ERROR_CANCELLING_PAYMENT_ORDER);
-            }
+        } catch (Exception e) {
+            log.error("Error cancelling payment order with id=" + id, e);
+            notification = new Notification(NotificationType.ERROR, MESSAGE_ERROR_CANCELLING_PAYMENT_ORDER);
         }
         redirectAttributes.addFlashAttribute(ATTR_NOTIFICATION, notification);
         return REDIRECT + PATH;

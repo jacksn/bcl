@@ -23,4 +23,6 @@ public interface PaymentOrderService {
     PaymentOrder save(PaymentOrder paymentOrder);
 
     PaymentOrder get(Integer id);
+
+    void cancel(PaymentOrder paymentOrder);
 }

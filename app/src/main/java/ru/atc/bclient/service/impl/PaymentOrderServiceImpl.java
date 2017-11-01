@@ -4,23 +4,22 @@ import org.springframework.stereotype.Service;
 import ru.atc.bclient.model.entity.Account;
 import ru.atc.bclient.model.entity.LegalEntity;
 import ru.atc.bclient.model.entity.PaymentOrder;
+import ru.atc.bclient.model.entity.PaymentOrderStatus;
 import ru.atc.bclient.model.repository.PaymentOrderRepository;
+import ru.atc.bclient.service.PaymentOrderProcessor;
 import ru.atc.bclient.service.PaymentOrderService;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PaymentOrderServiceImpl implements PaymentOrderService {
-    private PaymentOrderRepository paymentOrderRepository;
+    private PaymentOrderRepository repository;
+    private PaymentOrderProcessor processor;
 
-    public PaymentOrderServiceImpl(PaymentOrderRepository paymentOrderRepository) {
-        this.paymentOrderRepository = paymentOrderRepository;
+    public PaymentOrderServiceImpl(PaymentOrderRepository repository, PaymentOrderProcessor processor) {
+        this.repository = repository;
+        this.processor = processor;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
             }
             groupedPaymentOrders.put(sender, accountMap);
         }
-        for (PaymentOrder paymentOrder : paymentOrderRepository.getAllByDateBetweenAndSenderInOrderByDateAscIdAsc(startDate, endDate, senders)) {
+        for (PaymentOrder paymentOrder : repository.getAllByDateBetweenAndSenderInOrderByDateAscIdAsc(startDate, endDate, senders)) {
             groupedPaymentOrders.get(paymentOrder.getSender()).get(paymentOrder.getSenderAccount()).add(paymentOrder);
         }
         return groupedPaymentOrders;
@@ -44,21 +43,35 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
 
     @Override
     public PaymentOrder getBySendersAndId(Set<LegalEntity> legalEntities, Integer id) {
-        return paymentOrderRepository.getBySenderInAndId(legalEntities, id);
+        return repository.getBySenderInAndId(legalEntities, id);
     }
 
     @Override
     public Integer getNewNumber(LegalEntity legalEntity) {
-        return paymentOrderRepository.getLastNumber(legalEntity.getId()) + 1;
+        return repository.getLastNumber(legalEntity.getId()) + 1;
     }
 
     @Override
     public PaymentOrder save(PaymentOrder paymentOrder) {
-        return paymentOrderRepository.save(paymentOrder);
+        return repository.save(paymentOrder);
     }
 
     @Override
     public PaymentOrder get(Integer id) {
-        return paymentOrderRepository.findOne(id);
+        return repository.findOne(id);
+    }
+
+    @Override
+    public void cancel(PaymentOrder paymentOrder) {
+        if (paymentOrder == null) {
+            throw new IllegalArgumentException("Платежное поручение не найдено.");
+        } else if (!(paymentOrder.getStatus().equals(PaymentOrderStatus.NEW)
+                || paymentOrder.getStatus().equals(PaymentOrderStatus.ACCEPTED))) {
+            throw new IllegalArgumentException("Отмена платежного поручения запрещена.");
+        } else if (processor.isProcessingInProgress()) {
+            throw new IllegalStateException("Отмена платежного поручения запрещена, идет обработка платежных поручений.");
+        }
+        paymentOrder.setStatus(PaymentOrderStatus.CANCELLED);
+        repository.save(paymentOrder);
     }
 }
